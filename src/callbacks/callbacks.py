@@ -80,14 +80,12 @@ def mensaje_inicio(contents, filename):
         ]    
     else:
         return [
-                dbc.Col([ 
-                    dbc.Alert(
+                dbc.Alert(
                         [
-                            html.H5('¡Cargue un archivo por favor!')                                                
+                            html.H6('¡Cargue un archivo por favor!')                                                
                         ],
-                        color = 'warning'      
-                        ) 
-                ])
+                        color = 'danger'      
+                        )
             ]
  
 #Devolución de llamada para el filename------------------------------------
@@ -102,14 +100,12 @@ def mensaje_inicio(contents, value):
             return []
         else:
             return [
-                dbc.Col([ 
-                    dbc.Alert(
+                dbc.Alert(
                         [
-                            html.P('¡Seleccione empresa!')                                                
+                            html.H6('¡Seleccione empresa!')                                                
                         ],
-                        color = 'warning'      
+                        color = 'danger'      
                         ) 
-                ])
             ]
 
 # Devolución de llamada del date picker range

@@ -72,15 +72,15 @@ app.layout = dbc.Container([
                         ]),
                         style={                            
                             'width': '100%',
-                            'height': '70px',
-                            'lineHeight': '60px',
+                            'height': '60px',
+                            'lineHeight': '50px',
                             'borderWidth': '3px',
                             'borderStyle': 'dashed',
                             'borderRadius': '5px',
                             'textAlign': 'center',                           
                         },
             ),
-            html.Div(id="alerta-inicio") 
+            html.Div(id="alerta-inicio", style ={'textAlign': 'center'}) 
         ], xs=12, md=5),            
 
         dbc.Col([
@@ -103,7 +103,7 @@ app.layout = dbc.Container([
                 clearable=False,                                                     
                 className="dropdown"                                                                         
             ),
-            html.Div(id="alerta-dropdown")                            
+            html.Div(id="alerta-dropdown", style ={'textAlign': 'center'})                            
         ], xs=6, md=2)
              
     ]),
