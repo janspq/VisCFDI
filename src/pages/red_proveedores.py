@@ -16,10 +16,9 @@ layout = dls.Pulse([
                                style={'background-color': "#222222"}, 
                                options = dict(height= '750px',
                                                 width= '100%',
+                                                interaction = dict(hover= True),
                                                 physics = {'barnesHut': {'gravitationalConstant': -8000,
                                                                           'springConstant': 0.01, 'springLength': 100}},
-                                                
-                                                
                                                 
                                                                                                  
                                               )

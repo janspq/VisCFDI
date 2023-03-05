@@ -539,7 +539,12 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
             got_data = dff_clientes.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
             got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))
-                    
+           
+
+            sources = got_data['Proveedores']
+            targets = got_data['Clientes']
+            weights = got_data['Valor_nodo']
+              
             
         
         else:
@@ -548,28 +553,27 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
             dff_clientes=dff_clientes.assign(Cant_Facturas=1)
             got_data = dff_clientes.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
-            got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))     
+            got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5)) 
+
+            sources = got_data['Proveedores']
+            targets = got_data['Clientes']
+            weights = got_data['Valor_nodo']
+               
        
         got_net = Network(directed =True,font_color="white")
   
         got_net.barnes_hut()
 
-        sources = got_data['Proveedores']
-        targets = got_data['Clientes']
-        weights = got_data[' Total ']
-        size = got_data['Valor_nodo']
-        
-
-        edge_data = zip(sources, targets, weights, size)
+        edge_data = zip(sources, targets, weights)
 
         for e in edge_data:
             src = e[0]
             dst = e[1]
             w = e[2]
-            s = e[3]           
+                    
 
-            got_net.add_node(src, src, title=src)
-            got_net.add_node(dst, dst, title=dst, size=s)           
+            got_net.add_node(src, src, title=src, color='#54B4D3')
+            got_net.add_node(dst, dst, title=dst, size=w, color='orange')           
             got_net.add_edge(src, dst, value=w)
       
         data = {'nodes': got_net.nodes,
@@ -609,22 +613,42 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
         dff = df.loc[mask] 
          
         if value =='Seleccionar todo':  
-            dff_clientes = dff.loc[dff.Proveedores == nodo]          
+            dff_clientes = dff.loc[dff.Proveedores == nodo]                      
             dff_clientes=dff_clientes.assign(Cant_Facturas=1)
-            dff_clientes = dff_clientes.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
-                
+            dff_clientes = dff_clientes.groupby(["Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
+              
+
             nclientes = str(dff_clientes['Clientes'].count())
-            total = str(dff_clientes[' Total '].sum().round(2))
-            saldo_insoluto = str(dff_clientes[' Saldo insoluto '].sum().round(2))
-            cant_facturas = str(dff_clientes['Cant_Facturas'].sum())
+            totalc = dff_clientes[' Total '].sum().round(2)
+            saldo_insolutoc = dff_clientes[' Saldo insoluto '].sum().round(2)
+            cant_facturasc = str(dff_clientes['Cant_Facturas'].sum())
+
+            dff_proveedores = dff.loc[dff.Clientes == nodo]          
+            dff_proveedores=dff_proveedores.assign(Cant_Facturas=1)
+            dff_proveedores = dff_proveedores.groupby(["Proveedores"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
+            
+
+            nproveedores = str(dff_proveedores['Proveedores'].count())
+            totalp = dff_proveedores[' Total '].sum().round(2)
+            saldo_insolutop = dff_proveedores[' Saldo insoluto '].sum().round(2)
+            cant_facturasp = str(dff_proveedores['Cant_Facturas'].sum())
 
             if x['nodes'][0] != value:
-                return [
-                    html.H6('Proveedor: ' + nodo),
-                    html.H6('Clientes: ' + nclientes),                 
-                    html.H6('Total: ' + '$' + total),
-                    html.H6('Saldo insoluto: ' + '$' + saldo_insoluto),
-                    html.H6('Cant. Fact: ' + cant_facturas)              
+                return [                    
+                    html.Br(),
+                    html.Br(),
+                    html.Br(),
+                    html.H4(nodo),
+                    html.Br(),
+                    html.H6('Clientes: ' + nclientes),            
+                    html.H6('Total: ' + '$' + f"{totalc:,}"), 
+                    html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
+                    html.H6('Cant. Fact: ' + cant_facturasc),
+                    html.Br(),
+                    html.H6('Proveedores: ' + nproveedores),                 
+                    html.H6('Total: ' + '$' + f"{totalp:,}"),
+                    html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
+                    html.H6('Cant. Fact: ' + cant_facturasp)              
                     ]
             return [ 
                 html.H6('Analizada: ' + value)            
@@ -775,10 +799,14 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
          
         if value =='Seleccionar todo':            
             dff_proveedores=dff.assign(Cant_Facturas=1)
-            got_data = dff_proveedores.groupby(["Clientes", "Proveedores"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
+            got_data = dff_proveedores.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
             got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))
-
+           
+            sources = got_data['Proveedores']
+            targets = got_data['Clientes']
+            weights = got_data['Valor_nodo']
+            
         else:
             # dataframe filtrado por fechas de los proveedores 
             dff_proveedores = dff.loc[dff['Clientes']==value]
@@ -786,34 +814,31 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
             got_data = dff_proveedores.groupby(["Clientes", "Proveedores"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
             got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))
-        
-
+            
+            sources = got_data['Proveedores']
+            targets = got_data['Clientes']
+            weights = got_data['Valor_nodo']
+           
         got_net = Network(directed =True, font_color="white")
         got_net.barnes_hut()
        
-        sources = got_data['Clientes']
-        targets = got_data['Proveedores']
-        weights = got_data[' Total ']
-        size = got_data['Valor_nodo']
-
-        edge_data = zip(sources, targets, weights, size)
+        edge_data = zip(sources, targets, weights)
 
         for e in edge_data:
             src = e[0]
             dst = e[1]
             w = e[2]
-            s = e[3]
+          
 
-            got_net.add_node(src, src, title=src)
-            got_net.add_node(dst, dst, title=dst, size=s)
+            got_net.add_node(src, src, title=src, size=w, color='#54B4D3')
+            got_net.add_node(dst, dst, title=dst, color='orange')
             got_net.add_edge(src, dst, value=w)
-
         
         data = {'nodes': got_net.nodes,
                 'edges': [{'id': str(edge['from']) + " __ " + str(edge['to']),
                            'from': edge['from'],
                            'to': edge['to'],
-                           'arrows':'from'                           
+                           'arrows':'to'              
                            }
                           for edge in got_net.edges]
                 }
@@ -844,26 +869,46 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
         dff = df.loc[mask] 
          
         if value =='Seleccionar todo':  
-            dff_proveedores = dff.loc[dff.Clientes == nodo]          
-            dff_proveedores=dff_proveedores.assign(Cant_Facturas=1)
-            dff_proveedores = dff_proveedores.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
-                
-            nproveedores = str(dff_proveedores['Proveedores'].count())
-            total = str(dff_proveedores[' Total '].sum().round(2))
-            saldo_insoluto = str(dff_proveedores[' Saldo insoluto '].sum().round(2))
-            cant_facturas = str(dff_proveedores['Cant_Facturas'].sum())
+           dff_clientes = dff.loc[dff.Proveedores == nodo]                      
+           dff_clientes=dff_clientes.assign(Cant_Facturas=1)
+           dff_clientes = dff_clientes.groupby(["Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
+         
 
-            if x['nodes'][0] != value:
-                return [
-                    html.H6('Cliente: ' + nodo),
-                    html.H6('Proveedores: ' + nproveedores),                 
-                    html.H6('Total: ' + '$' + total),
-                    html.H6('Saldo insoluto: ' + '$' + saldo_insoluto),
-                    html.H6('Cant. Fact: ' + cant_facturas)              
-                    ]
-            return [ 
-                html.H6('Analizada: ' + value)            
-                ]
+           nclientes = str(dff_clientes['Clientes'].count())
+           totalc = dff_clientes[' Total '].sum().round(2)
+           saldo_insolutoc = dff_clientes[' Saldo insoluto '].sum().round(2)
+           cant_facturasc = str(dff_clientes['Cant_Facturas'].sum())
+
+           dff_proveedores = dff.loc[dff.Clientes == nodo]          
+           dff_proveedores=dff_proveedores.assign(Cant_Facturas=1)
+           dff_proveedores = dff_proveedores.groupby(["Proveedores"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
+         
+
+           nproveedores = str(dff_proveedores['Proveedores'].count())
+           totalp = dff_proveedores[' Total '].sum().round(2)
+           saldo_insolutop = dff_proveedores[' Saldo insoluto '].sum().round(2)
+           cant_facturasp = str(dff_proveedores['Cant_Facturas'].sum())
+
+           if x['nodes'][0] != value:
+               return [                    
+                   html.Br(),
+                   html.Br(),
+                   html.Br(),
+                   html.H4(nodo),                    
+                   html.Br(),
+                   html.H6('Proveedores: ' + nproveedores),                 
+                   html.H6('Total: ' + '$' + f"{totalp:,}"),
+                   html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
+                   html.H6('Cant. Fact: ' + cant_facturasp),
+                   html.Br(),
+                   html.H6('Clientes: ' + nclientes),            
+                   html.H6('Total: ' + '$' + f"{totalc:,}"), 
+                   html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
+                   html.H6('Cant. Fact: ' + cant_facturasc),               
+                   ]
+           return [ 
+               html.H6('Analizada: ' + value)            
+               ]
             
         else:
             # dataframe filtrado por fechas de los proveedores 
