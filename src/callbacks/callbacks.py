@@ -264,17 +264,16 @@ def create_summary(data, value):
 @callback(
     Output('table', 'data'),
     Output('table', 'columns'),
-    Output('table_cancelada', 'data'),
-    Output('table_cancelada', 'columns'),
     [Input('upload-data', 'contents'),
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date'),
     Input('dropdown_empresa_base', 'value'),
     Input('tipo_empresa_radioitem', 'value'),
-    Input('dropdown_cliente_proveedor', 'value')]
+    Input('dropdown_cliente_proveedor', 'value'),
+    Input('dropdown_facturas', 'value')]
 )
-def create_table(contents, filename, start_date, end_date, value, item, valuecp):
+def create_table(contents, filename, start_date, end_date, value, item, valuecp, valuev):
 
     if value :
 
@@ -333,28 +332,26 @@ def create_table(contents, filename, start_date, end_date, value, item, valuecp)
                 else:
                     dftabla = dft.loc[(dft['Proveedores'] == valuecp) | (dft['Clientes'] == valuecp)]
         
-        
-        
-        dftabla_vigente =dftabla.loc[df['Estatus']=='Vigente']
-        dftabla_cancelada= dftabla.loc[df['Estatus']=='Cancelada'] 
-
-        data_vigente= dftabla_vigente.to_dict('records')
-  
-        columns_vigente=[
+        if valuev == 'Facturas vigentes':
+            dftabla_vigente =dftabla.loc[df['Estatus']=='Vigente']
+            data = dftabla_vigente.to_dict('records')
+            columns = [
             {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
             if i == "Tipo de cambio" or i == " Total " or i == " Saldo insoluto "
             else {"name": i, "id": i, "deletable": False, "selectable": True}
             for i in dftabla_vigente.columns
             ]
-        data_cancelada= dftabla_cancelada.to_dict('records')
-  
-        columns_cancelada=[
+        else:
+          dftabla_cancelada= dftabla.loc[df['Estatus']=='Cancelada']
+          data = dftabla_cancelada.to_dict('records')
+          columns = [
             {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
             if i == "Tipo de cambio" or i == " Total " or i == " Saldo insoluto "
             else {"name": i, "id": i, "deletable": False, "selectable": True}
             for i in dftabla_cancelada.columns
             ]    
-        return data_vigente, columns_vigente, data_cancelada, columns_cancelada
+
+        return data, columns
     else:
         return dash.no_update
   
