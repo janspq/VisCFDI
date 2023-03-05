@@ -7,7 +7,10 @@ import dash_loading_spinners as dls
 layout = dls.Pulse([
     html.Center(html.H3("Red de Proveedores")),    
     dbc.Row([ 
-        dbc.Col([        
+        dbc.Col([   
+                html.P('Provedores', style={'textAlign': 'center', 'color':'#54B4D3'}), 
+                html.P('--->', style={'textAlign': 'center'}),
+                html.P('Clientes', style={'textAlign': 'center', 'color':'orange'}),     
                 html.Div(id = 'select-node-proveedores')
             ], xs=12, md=2), #parrafo de select nodes         
         dbc.Col(

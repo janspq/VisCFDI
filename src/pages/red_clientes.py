@@ -8,6 +8,9 @@ layout = dls.Pulse([
     html.Center(html.H3("Red de Clientes")),    
     dbc.Row([   
         dbc.Col([
+                html.P('Provedores', style={'textAlign': 'center', 'color':'#54B4D3'}), 
+                html.P('--->', style={'textAlign': 'center'}),
+                html.P('Clientes', style={'textAlign': 'center', 'color':'orange'}),
                 html.Div(id = 'select-node-clientes')
             ], xs=12, md=2), #parrafo de select nodes        
         dbc.Col(

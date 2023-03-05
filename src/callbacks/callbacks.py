@@ -527,7 +527,6 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
    
 )
 def create_net_clientes(contents, filename, start_date, end_date, value):
-    data = []
     if value:
         df = parse_data(contents, filename)
         df = df.loc[df['Estatus']=='Vigente']         
@@ -535,20 +534,33 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
         dff = df.loc[mask] 
 
+        got_net = Network(directed =True,font_color="white")  
+        got_net.barnes_hut()
+
         if value =='Seleccionar todo':            
             dff_clientes=dff.assign(Cant_Facturas=1)
             got_data = dff_clientes.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
             got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))
-           
-
+  
             sources = got_data['Proveedores']
             targets = got_data['Clientes']
             weights = got_data['Valor_nodo']
-              
-            
-        
+           
+            edge_data = zip(sources, targets, weights)
+
+            for e in edge_data:
+                            src = e[0]
+                            dst = e[1]
+                            w = e[2]
+   
+                            got_net.add_node(src, src, title=src, color='#54B4D3')
+                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_edge(src, dst, value=w)
+       
         else:
+            for node in got_net.nodes:
+                node["value"] = []
             # dataframe filtrado por fechas de los clientes 
             dff_clientes = dff.loc[dff['Proveedores']==value]
             dff_clientes=dff_clientes.assign(Cant_Facturas=1)
@@ -559,24 +571,21 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
             sources = got_data['Proveedores']
             targets = got_data['Clientes']
             weights = got_data['Valor_nodo']
-               
-       
-        got_net = Network(directed =True,font_color="white")
-  
-        got_net.barnes_hut()
 
-        edge_data = zip(sources, targets, weights)
+            edge_data = zip(sources, targets, weights)
 
-        for e in edge_data:
-            src = e[0]
-            dst = e[1]
-            w = e[2]
+            for e in edge_data:
+                            src = e[0]
+                            dst = e[1]
+                            w = e[2]
                     
 
-            got_net.add_node(src, src, title=src, color='#54B4D3')
-            got_net.add_node(dst, dst, title=dst, size=w, color='orange')           
-            got_net.add_edge(src, dst, value=w)
-      
+                            got_net.add_node(src, src, title=src, color='#54B4D3')
+                            got_net.add_node(dst, dst, title=dst, size=w, color='orange')           
+                            got_net.add_edge(src, dst, value=w)
+        
+     
+
         data = {'nodes': got_net.nodes,
                 
                 'edges': [{'from': edge['from'],
@@ -798,16 +807,32 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
      
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
         dff = df.loc[mask] 
+
+        got_net = Network(directed =True, font_color="white")
+        got_net.barnes_hut()
          
         if value =='Seleccionar todo':            
             dff_proveedores=dff.assign(Cant_Facturas=1)
             got_data = dff_proveedores.groupby(["Proveedores", "Clientes"])[[" Total ", " Saldo insoluto ", 'Cant_Facturas']].sum().reset_index()
             media = got_data[' Total '].mean()
             got_data=got_data.assign(Valor_nodo=((got_data[' Total ']/media)+5))
-           
+
             sources = got_data['Proveedores']
             targets = got_data['Clientes']
             weights = got_data['Valor_nodo']
+           
+            edge_data = zip(sources, targets, weights)
+
+            for e in edge_data:
+                            src = e[0]
+                            dst = e[1]
+                            w = e[2]
+          
+
+                            got_net.add_node(src, src, title=src, color='#54B4D3')
+                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_edge(src, dst, value=w)
+
             
         else:
             # dataframe filtrado por fechas de los proveedores 
@@ -821,20 +846,19 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
             targets = got_data['Clientes']
             weights = got_data['Valor_nodo']
            
-        got_net = Network(directed =True, font_color="white")
-        got_net.barnes_hut()
-       
-        edge_data = zip(sources, targets, weights)
+            edge_data = zip(sources, targets, weights)
 
-        for e in edge_data:
-            src = e[0]
-            dst = e[1]
-            w = e[2]
+            for e in edge_data:
+                            src = e[0]
+                            dst = e[1]
+                            w = e[2]
           
 
-            got_net.add_node(src, src, title=src, size=w, color='#54B4D3')
-            got_net.add_node(dst, dst, title=dst, color='orange')
-            got_net.add_edge(src, dst, value=w)
+                            got_net.add_node(src, src, title=src, size=w, color='#54B4D3')
+                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_edge(src, dst, value=w)
+       
+        
         
         data = {'nodes': got_net.nodes,
                 'edges': [{'id': str(edge['from']) + " __ " + str(edge['to']),
