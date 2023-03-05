@@ -38,7 +38,7 @@ layout = dls.Pulse([
                             id='dropdown_cliente_proveedor',                                                          
                             className="dropdown"                                             
                         )
-                ], width = 2) 
+                ],xs=6, md=2) 
     ]),
     html.Br(),
      
@@ -56,7 +56,7 @@ layout = dls.Pulse([
                             clearable=False,                                                               
                             className="dropdown"                                             
                         )
-                ], width = 2)
+                ], xs=6, md=2)
         ),
         dash_table.DataTable(
             id='table',           
