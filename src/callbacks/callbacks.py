@@ -489,11 +489,12 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
         fig2.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
 
         # Tabla de clientes
+        new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
         data= new_df.to_dict('records')  
            
         columns=[
-            {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == " Total " or i == " Saldo insoluto "
+            {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+            if i == " Total " or i == " Insoluto"
             else {"name": i, "id": i, "deletable": False, "selectable": True}
             for i in new_df.columns
             ]
@@ -755,12 +756,13 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
                           size='Facturas')
         fig6.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
         fig6.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
-  
+        
+        new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
         data= new_df.to_dict('records')
            
         columns=[
-            {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == " Total " or i == " Saldo insoluto "
+            {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+            if i == " Total " or i == " Insoluto"
             else {"name": i, "id": i, "deletable": False, "selectable": True}
             for i in new_df.columns
             ]
