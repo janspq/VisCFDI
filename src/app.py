@@ -20,9 +20,13 @@ load_figure_template("bootstrap")
 # Define the navbar
 nav = components.Navbar()
 
+dbc_css = (
+    "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.1/dbc.min.css"
+)
+
 app = dash.Dash(__name__, 
                 title = 'VisCFDI',
-                external_stylesheets=[dbc.themes.BOOTSTRAP], 
+                external_stylesheets=[dbc.themes.BOOTSTRAP, dbc_css], 
                 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0"}],
                 suppress_callback_exceptions=False)
 server = app.server
@@ -88,26 +92,29 @@ app.layout = dbc.Container([
             dcc.DatePickerRange(
                 id="picker-range",
                 display_format='DD/MM/YYYY',
-                minimum_nights=0,                
-                # persistence=True,
-                # persisted_props=['start_date', 'end_date'],
-                # persistence_type='session', 
+                minimum_nights=0, 
+                start_date_placeholder_text='Fecha inicio',
+                end_date_placeholder_text='Fecha final',
+                style = {'font-size': '12px','display': 'inline-block', 'border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate'},
                 className='date_picker_style'                        
             )
         ], xs=6, md={"size": 3, "offset": 1}),  
 
         dbc.Col([
+            html.Div(id='info-toast'),
+            html.Div(id='info-toast2'),
             html.H6("Empresa a analizar:"),
             dcc.Dropdown(
                 id='dropdown_empresa_base',
-                clearable=False,                                                     
+                clearable=False, 
+                placeholder='Seleccionar empresa',                                                  
                 className="dropdown"                                                                         
             ),
             html.Div(id="alerta-dropdown", style ={'textAlign': 'center'})                            
         ], xs=6, md=2)
              
     ]),
- 
+    
     html.Hr(),    
         
     dbc.Row(

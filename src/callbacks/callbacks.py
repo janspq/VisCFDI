@@ -37,8 +37,8 @@ def to_float_from_tipo_cambio_decimal(string):
 def parse_data(contents, filename):
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
-    try:
-        if 'csv' in filename:
+    if 'csv' in filename:
+        try:      
             # Assume that the user uploaded a CSV or TXT file
             df = pd.read_csv(
             io.StringIO(decoded.decode('utf-8')), 
@@ -50,20 +50,16 @@ def parse_data(contents, filename):
              })
             df['Fecha factura'] = [datetime.datetime.strptime(x, '%d/%m/%Y') for x in df['Fecha factura'] ]
             df.sort_values(by=['Fecha factura'], inplace=True)
-
-        # elif 'xls' in filename:
-        #     # Assume that the user uploaded an excel file
-        #     df = pd.read_excel(io.BytesIO(decoded))
-        # elif 'txt' or 'tsv' in filename:
-        #     # Assume that the user upl, delimiter = r'\s+'oaded an excel file
-        #     df = pd.read_csv(
-        #         io.StringIO(decoded.decode('utf-8')), delimiter = r'\s+')
-    except Exception as e:
-        print(e)
-        return html.Div([
-            'Archivo no válido!'
-        ])
+            df = df[['Proveedores', 'Clientes', 'Fecha factura', 'Metodo de pago', 'Moneda', 'Tipo de cambio', ' Total ', 'Estatus', ' Saldo insoluto ', 'Estatus pago', 'Deducible']]
+        except Exception as e:
+            print(e)
+            df = pd.DataFrame()  
+            return df      
+        return df
+    
+    df = pd.DataFrame()
     return df
+
 
 #Devolución de llamada para el filename------------------------------------
 @callback(
@@ -72,41 +68,60 @@ def parse_data(contents, filename):
     Input('upload-data', 'filename')],   
 )    
 def mensaje_inicio(contents, filename):
-    if contents:              
-        return [           
+    if contents:
+        df = parse_data(contents, filename) 
+        if df.empty == False:
+           return [           
                 dbc.Col([
-                    html.P('Cargado: '+ filename, style={'textAlign': 'center'})
+                    html.H6('Cargado: '+ filename, style={'textAlign': 'center'})
                 ]),           
-        ]    
-    else:
-        return [
+            ]                       
+        else:
+            return [
                 dbc.Alert(
                         [
-                            html.H6('¡Cargue un archivo por favor!')                                                
+                            html.H6('Cargado: '+ filename, style={'textAlign': 'center'})                                                
                         ],
                         color = 'danger'      
                         )
+            ] 
+    else:
+        return [
+                dbc.Col([ 
+                    dbc.Alert(
+                        [
+                            html.H5('¡Cargue un archivo por favor!')                                                
+                        ],
+                        color = 'info'      
+                        ) 
+                ])
             ]
+
+
+               
  
 #Devolución de llamada para el filename------------------------------------
 @callback(
     Output("alerta-dropdown", "children"),
     [Input('upload-data', 'contents'),
+     Input('upload-data', 'filename'),
     Input('dropdown_empresa_base', 'value')],   
 )    
-def mensaje_inicio(contents, value):
+def mensaje_inicio(contents, filename, value):
     if contents:
-        if value:
-            return []
-        else:
-            return [
-                dbc.Alert(
-                        [
+        df = parse_data(contents, filename) 
+        if df.empty == False:
+            if value:
+                return []
+            else:
+                return [
+                    dbc.Alert([
                             html.H6('¡Seleccione empresa!')                                                
                         ],
-                        color = 'danger'      
-                        ) 
+                        color = 'info'      
+                    ) 
             ]
+    return []
 
 # Devolución de llamada del date picker range
 @callback(
@@ -119,8 +134,8 @@ def mensaje_inicio(contents, value):
     Input('upload-data', 'filename')]    
 )
 def update_datepickerrange(contents, filename):
-    if contents:
-        df = parse_data(contents, filename) 
+    df = parse_data(contents, filename)
+    if df.empty == False:         
         min_date = df['Fecha factura'].min()
         max_date = df['Fecha factura'].max()        
         min_date_allowed=min_date
@@ -128,30 +143,72 @@ def update_datepickerrange(contents, filename):
         initial_visible_month=max_date
         start_date=min_date
         end_date=max_date
-
         return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date 
-    else:
-        return dash.no_update
+    else:    
+        min_date_allowed= None
+        max_date_allowed=None
+        initial_visible_month=None
+        start_date=None
+        end_date=None
+        return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date
+
 
 
 # Devolución de llamada del dropdown_empresa_base
 @callback(
     Output('dropdown_empresa_base', 'options'),
+    Output("info-toast", "children"),
     [Input('upload-data', 'contents'),
     Input('upload-data', 'filename')]
 )
 def update_dropdown_empresa_base(contents, filename):
     if contents:
-        df = parse_data(contents, filename)         
-        frames = [df['Proveedores'], df['Clientes']]
-        result = pd.concat(frames)
-        empresa_a_analizar = result.unique()
-        
-        lst =[{'label': 'Seleccionar todo', 'value': 'Seleccionar todo'}] +  [{'label': i, 'value': i} for i in empresa_a_analizar]
-       
-        return lst
+        df = parse_data(contents, filename) 
+        if df.empty == False:
+            frames = [df['Proveedores'], df['Clientes']]
+            result = pd.concat(frames)
+            empresa_a_analizar = result.unique()
+             
+            lst =[{'label': 'Seleccionar todo', 'value': 'Seleccionar todo'}] +  [{'label': i, 'value': i} for i in empresa_a_analizar]
+            children = [
+                dbc.Toast(
+                id="toast",
+                header="Cargado con éxito",
+                icon="success",
+                duration=1000,
+                is_open=True,
+                style={"position": "fixed", "top": 125, "left": 440, "width": 200},
+            ),
+            ]
+            return lst, children
+        else:
+            children = [
+                dbc.Toast(
+                [html.P("El archivo no es válido", className="mb-0")],
+                id="toast",
+                header="Error",
+                dismissable=True,
+                icon="danger",
+                is_open=True,
+                style={"position": "fixed", "top": 125, "left": 440, "width": 200},
+            ),
+            ]
+            lst=[]
+            return lst, children
     else:
-        return dash.no_update
+        children = [
+                dbc.Toast(
+                id="toast",
+                header="Cargue un archivo",
+                icon="info",
+                dismissable=True,
+                duration=4000,
+                is_open=True,
+                style={"position": "fixed", "top": 125, "left": 440, "width": 300},
+            ),
+            ]
+        lst=[]
+        return lst, children
 
 
 
@@ -200,7 +257,7 @@ def create_summary(data, value):
                             html.H4(n_clientes, style={'textAlign': 'center'}),
                             html.H6("Clientes", style={'textAlign': 'center'})                                                        
                         ],
-                        color="primary",
+                        color="lightgreen",
                     ),
                 ]),
                 dbc.Col([
@@ -210,7 +267,7 @@ def create_summary(data, value):
                             html.H4('$'+ f"{facturado:,}", style={'textAlign': 'center'}),
                             html.H6("Total", style={'textAlign': 'center'})
                         ],
-                        color="primary",
+                        color="lightgreen",
                     ),
                 ]),
                 dbc.Col([
@@ -220,7 +277,7 @@ def create_summary(data, value):
                             html.H6("Saldo insoluto", style={'textAlign': 'center'})
                            
                         ],
-                        color="primary",
+                        color="lightgreen",
                     ),
                 ]),
        
@@ -230,7 +287,7 @@ def create_summary(data, value):
                             html.H4(n_proveedores, style={'textAlign': 'center'}),
                             html.H6("Proveedores", style={'textAlign': 'center'})                    
                         ],
-                        color="info",
+                        color="lightblue",
                     ),
                 ]),
                 dbc.Col([
@@ -240,7 +297,7 @@ def create_summary(data, value):
                             html.H6("Total", style={'textAlign': 'center'})
                            
                         ],
-                        color="info",
+                        color="lightblue",
                     ),
                 ]),
                 dbc.Col([
@@ -250,7 +307,7 @@ def create_summary(data, value):
                             html.H6("Saldo insoluto", style={'textAlign': 'center'})
                            
                         ],
-                        color="info",
+                        color="lightblue",
                     ),
                 ]),
             ])
@@ -982,3 +1039,36 @@ callback(
     ],
     [State("modal-body-scroll", "is_open")],
 )(toggle_modal)    
+
+# ##########   TOAST ################################
+@callback(
+    Output("info-toast2", "children"),
+    [Input("dropdown_empresa_base", "value"),
+    Input('picker-range', 'start_date'),
+    Input('picker-range', 'end_date')]
+)
+def open_toast(value, start_date, end_date):
+    if value:
+        return [
+            dbc.Toast(
+                id="toast",
+                header="Selección exitosa",
+                icon="success",
+                duration=1000,
+                is_open=True,
+                style={"position": "fixed", "top": 100, "right": 50, "width": 200},
+            ),
+        ]
+    else:
+        if end_date:
+             return [
+                 dbc.Toast(
+                     id="toast",
+                     header="Seleccionar empresa",
+                     icon="info",
+                     dismissable=True,
+                     duration=4000,
+                     is_open=True,
+                     style={"position": "fixed", "top": 100, "right": 50, "width": 200},
+                    ),
+                ]

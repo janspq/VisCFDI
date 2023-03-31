@@ -7,9 +7,12 @@ import dash_loading_spinners as dls
 # Define the page layout
 layout = dls.Pulse([    
     dbc.Row([
-        dbc.Col(html.H3("CFDI emitidos o recibidos",
+        dbc.Col([html.H3("INGRESOS",
                         className='text-center')
-        , width = 12)
+    ], style={'background-color': 'lightgreen', 'margin-right': '10px', 'margin-left': '10px'}),
+        dbc.Col([html.H3("EGRESOS",
+                        className='text-center')
+    ], style={'background-color': 'lightblue', 'margin-right': '10px', 'margin-left': '10px'})
     ]),
     html.Br(),
 
@@ -19,7 +22,7 @@ layout = dls.Pulse([
     
     dbc.Row([
         dbc.Col([
-            html.H6("Relación con empresa analizada:"),
+            html.H6("Clientes o proveedores:"),
             dcc.RadioItems(
                 id='tipo_empresa_radioitem',
                 options=[ 
@@ -31,14 +34,14 @@ layout = dls.Pulse([
                 labelStyle={'display': 'block'}                
             )
 
-        ]),
+        ], xs=6, md=3),
         dbc.Col([
-                    html.H6("Nombre:", style={'textAlign': 'center'}),
+                    html.H6("# cliente o proveedor:", style={'textAlign': 'center'}),
                     dcc.Dropdown(
                             id='dropdown_cliente_proveedor',                                                          
                             className="dropdown"                                             
                         )
-                ],xs=6, md=2) 
+                ], xs=6, md={"size": 2, "offset": 7}) 
     ]),
     html.Br(),
      
