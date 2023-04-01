@@ -107,7 +107,7 @@ color="#0275d8",
 speed_multiplier=1,
 margin =4,
 width=60,
-fullscreen=False, 
+fullscreen=True, 
 fullscreen_style={'opacity': '0.7'},
 )
 
