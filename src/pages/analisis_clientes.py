@@ -7,7 +7,7 @@ import dash_loading_spinners as dls
 layout = dls.Pulse([
 
     dbc.Row(
-        dbc.Col(html.H3("Análisis de Clientes",
+        dbc.Col(html.H4("Análisis de Clientes",
                         className='text-center'),
                         width = 12)
     ),
@@ -81,7 +81,7 @@ color="#0275d8",
 speed_multiplier=1,
 margin =4,
 width=60,
-fullscreen=True, 
+fullscreen=False, 
 fullscreen_style={'opacity': '0.7'}
 )
 

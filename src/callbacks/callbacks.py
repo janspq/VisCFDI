@@ -73,14 +73,14 @@ def mensaje_inicio(contents, filename):
         if df.empty == False:
            return [           
                 dbc.Col([
-                    html.H6('Cargado: '+ filename, style={'textAlign': 'center'})
+                    html.P('Cargado: '+ filename, style={'textAlign': 'center'})
                 ]),           
             ]                       
         else:
             return [
                 dbc.Alert(
                         [
-                            html.H6('Cargado: '+ filename, style={'textAlign': 'center'})                                                
+                            html.P('Cargado: '+ filename, style={'textAlign': 'center'})                                                
                         ],
                         color = 'danger'      
                         )
@@ -90,7 +90,7 @@ def mensaje_inicio(contents, filename):
                 dbc.Col([ 
                     dbc.Alert(
                         [
-                            html.H5('¡Cargue un archivo por favor!')                                                
+                            html.H6('¡Cargue un archivo por favor!')                                                
                         ],
                         color = 'info'      
                         ) 
@@ -116,7 +116,7 @@ def mensaje_inicio(contents, filename, value):
             else:
                 return [
                     dbc.Alert([
-                            html.H6('¡Seleccione empresa!')                                                
+                            html.H6('¡Seleccione la empresa a analizar!')                                                
                         ],
                         color = 'info'      
                     ) 
@@ -131,19 +131,20 @@ def mensaje_inicio(contents, filename, value):
     Output('picker-range', 'start_date'),
     Output('picker-range', 'end_date'),   
     [Input('upload-data', 'contents'),
-    Input('upload-data', 'filename')]    
+    Input('upload-data', 'filename')]      
 )
 def update_datepickerrange(contents, filename):
-    df = parse_data(contents, filename)
-    if df.empty == False:         
-        min_date = df['Fecha factura'].min()
-        max_date = df['Fecha factura'].max()        
-        min_date_allowed=min_date
-        max_date_allowed=max_date
-        initial_visible_month=max_date
-        start_date=min_date
-        end_date=max_date
-        return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date 
+    if contents:
+        df = parse_data(contents, filename)
+        if df.empty == False:
+            min_date = df['Fecha factura'].min()
+            max_date = df['Fecha factura'].max()        
+            min_date_allowed=min_date
+            max_date_allowed=max_date
+            initial_visible_month=max_date
+            start_date=min_date
+            end_date=max_date
+            return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date 
     else:    
         min_date_allowed= None
         max_date_allowed=None
@@ -151,6 +152,7 @@ def update_datepickerrange(contents, filename):
         start_date=None
         end_date=None
         return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date
+    
 
 
 
@@ -159,25 +161,31 @@ def update_datepickerrange(contents, filename):
     Output('dropdown_empresa_base', 'options'),
     Output("info-toast", "children"),
     [Input('upload-data', 'contents'),
-    Input('upload-data', 'filename')]
+    Input('upload-data', 'filename'),
+    Input('picker-range', 'start_date'),
+    Input('picker-range', 'end_date')]
 )
-def update_dropdown_empresa_base(contents, filename):
+def update_dropdown_empresa_base(contents, filename, start_date, end_date):
     if contents:
         df = parse_data(contents, filename) 
         if df.empty == False:
-            frames = [df['Proveedores'], df['Clientes']]
+            mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
+            dff = df.loc[mask]
+            frames = [dff['Proveedores'], dff['Clientes']]
             result = pd.concat(frames)
             empresa_a_analizar = result.unique()
              
             lst =[{'label': 'Seleccionar todo', 'value': 'Seleccionar todo'}] +  [{'label': i, 'value': i} for i in empresa_a_analizar]
             children = [
                 dbc.Toast(
-                id="toast",
-                header="Cargado con éxito",
-                icon="success",
+                [html.P("¡Cargado con éxito!", className="mb-0")],
+                id="toast1",
+                header="Éxito",
+                dismissable=True,
                 duration=1000,
+                icon="success",
                 is_open=True,
-                style={"position": "fixed", "top": 125, "left": 440, "width": 200},
+                style={"position": "fixed", "top": 350, "left": 500, "width": 200},
             ),
             ]
             return lst, children
@@ -185,12 +193,12 @@ def update_dropdown_empresa_base(contents, filename):
             children = [
                 dbc.Toast(
                 [html.P("El archivo no es válido", className="mb-0")],
-                id="toast",
-                header="Error",
+                id="toast2",
+                header="Error",                
                 dismissable=True,
                 icon="danger",
                 is_open=True,
-                style={"position": "fixed", "top": 125, "left": 440, "width": 200},
+                style={"position": "fixed", "top": 150, "left": 500, "width": 200},
             ),
             ]
             lst=[]
@@ -198,13 +206,12 @@ def update_dropdown_empresa_base(contents, filename):
     else:
         children = [
                 dbc.Toast(
-                id="toast",
-                header="Cargue un archivo",
+                id="toast3",
+                header="Para comenzar vaya al panel principal y cargue un archivo por favor!!!",
                 icon="info",
                 dismissable=True,
-                duration=4000,
                 is_open=True,
-                style={"position": "fixed", "top": 125, "left": 440, "width": 300},
+                style={"position": "fixed", "top": 350, "left": 500, "width": 400},
             ),
             ]
         lst=[]
@@ -220,7 +227,7 @@ def update_dropdown_empresa_base(contents, filename):
 
 )    
 def create_summary(data, value):
-    if data:
+    if value:
         dff = pd.DataFrame(data)
         
         if value=='Seleccionar todo':
@@ -254,62 +261,62 @@ def create_summary(data, value):
                     dbc.Alert(
                         [
                           
-                            html.H4(n_clientes, style={'textAlign': 'center'}),
+                            html.H5(n_clientes, style={'textAlign': 'center'}),
                             html.H6("Clientes", style={'textAlign': 'center'})                                                        
                         ],
                         color="lightgreen",
                     ),
-                ]),
+                ], width=2),
                 dbc.Col([
                     dbc.Alert(
                         [
                             
-                            html.H4('$'+ f"{facturado:,}", style={'textAlign': 'center'}),
+                            html.H5('$'+ f"{facturado:,}", style={'textAlign': 'center'}),
                             html.H6("Total", style={'textAlign': 'center'})
                         ],
                         color="lightgreen",
                     ),
-                ]),
+                ], width=2),
                 dbc.Col([
                     dbc.Alert(
                         [
-                            html.H4('$'+ f"{por_cobrar:,}", style={'textAlign': 'center'}),
+                            html.H5('$'+ f"{por_cobrar:,}", style={'textAlign': 'center'}),
                             html.H6("Saldo insoluto", style={'textAlign': 'center'})
                            
                         ],
                         color="lightgreen",
                     ),
-                ]),
+                ], width=2),
        
                 dbc.Col([
                     dbc.Alert(
                         [
-                            html.H4(n_proveedores, style={'textAlign': 'center'}),
+                            html.H5(n_proveedores, style={'textAlign': 'center'}),
                             html.H6("Proveedores", style={'textAlign': 'center'})                    
                         ],
                         color="lightblue",
                     ),
-                ]),
+                ], width=2),
                 dbc.Col([
                     dbc.Alert(
                         [
-                            html.H4('$'+ f"{pagado:,}", style={'textAlign': 'center'}),
+                            html.H5('$'+ f"{pagado:,}", style={'textAlign': 'center'}),
                             html.H6("Total", style={'textAlign': 'center'})
                            
                         ],
                         color="lightblue",
                     ),
-                ]),
+                ], width=2),
                 dbc.Col([
                     dbc.Alert(
                         [
-                            html.H4('$'+ f"{por_pagar:,}", style={'textAlign': 'center'}),
+                            html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center'}),
                             html.H6("Saldo insoluto", style={'textAlign': 'center'})
                            
                         ],
                         color="lightblue",
                     ),
-                ]),
+                ], width=2),
             ])
         ] 
         return children   
@@ -532,7 +539,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
                        text_auto=True,
                        hover_data=['Facturas'])
         fig1.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig1.update_layout(margin = dict(t=30, l=30, r=30, b=30, ), title_x=0.5)
+        fig1.update_layout(title_x=0.5)
        
         # Burbujas-Tendencia de facturación en el período      
         fig2 = px.scatter(new_df2, x="Fecha factura", y=" Total ",
@@ -540,7 +547,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
                           color='Facturas',
                           size='Facturas')
         fig2.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig2.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
+        fig2.update_layout( title_x=0.5)
 
         # Tabla de clientes
         new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
@@ -562,7 +569,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
         fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
         fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
         fig4.update_xaxes(title='Fecha factura') 
-        fig4.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
+        fig4.update_layout(title_x=0.5)
  
         return fig1, fig2, data, columns, fig4
     else:
@@ -608,8 +615,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             dst = e[1]
                             w = e[2]
    
-                            got_net.add_node(src, src, title=src, color='#54B4D3')
-                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_node(src, src, title=src, color='#87C1FF')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
                             got_net.add_edge(src, dst, value=w)
        
         else:
@@ -634,8 +641,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             w = e[2]
                     
 
-                            got_net.add_node(src, src, title=src, color='#54B4D3')
-                            got_net.add_node(dst, dst, title=dst, size=w, color='orange')           
+                            got_net.add_node(src, src, title=src, color='#87C1FF')
+                            got_net.add_node(dst, dst, title=dst, size=w, color='lightgreen')           
                             got_net.add_edge(src, dst, value=w)
         
      
@@ -698,11 +705,9 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
             cant_facturasp = str(dff_proveedores['Cant_Facturas'].sum())
 
             if x['nodes'][0] != value:
-                return [                    
+                return [
                     html.Br(),
-                    html.Br(),
-                    html.Br(),
-                    html.H4(nodo),
+                    html.H5(nodo),
                     html.Br(),
                     html.H6('Clientes: ' + nclientes),            
                     html.H6('Total: ' + '$' + f"{totalc:,}"), 
@@ -883,8 +888,8 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, color='#54B4D3')
-                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_node(src, src, title=src, color=' #87C1FF')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
                             got_net.add_edge(src, dst, value=w)
 
             
@@ -908,8 +913,8 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, size=w, color='#54B4D3')
-                            got_net.add_node(dst, dst, title=dst, color='orange')
+                            got_net.add_node(src, src, title=src, size=w, color='#87C1FF')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
                             got_net.add_edge(src, dst, value=w)
        
         
@@ -970,11 +975,9 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
            cant_facturasp = str(dff_proveedores['Cant_Facturas'].sum())
 
            if x['nodes'][0] != value:
-               return [                    
+               return [
                    html.Br(),
-                   html.Br(),
-                   html.Br(),
-                   html.H4(nodo),                    
+                   html.H5(nodo),                    
                    html.Br(),
                    html.H6('Proveedores: ' + nproveedores),                 
                    html.H6('Total: ' + '$' + f"{totalp:,}"),
@@ -1051,24 +1054,26 @@ def open_toast(value, start_date, end_date):
     if value:
         return [
             dbc.Toast(
-                id="toast",
-                header="Selección exitosa",
+                id="toast4",
+                header="Realizado con éxito",
                 icon="success",
                 duration=1000,
+                dismissable=True,
                 is_open=True,
-                style={"position": "fixed", "top": 100, "right": 50, "width": 200},
+                style={"position": "fixed", "top": 200, "left": 500, "width": 200},
             ),
         ]
     else:
         if end_date:
              return [
                  dbc.Toast(
-                     id="toast",
-                     header="Seleccionar empresa",
+                     id="toast5",
+                     header="En el panel principal seleccionar empresa a analizar!!!",
                      icon="info",
                      dismissable=True,
-                     duration=4000,
                      is_open=True,
-                     style={"position": "fixed", "top": 100, "right": 50, "width": 200},
+                     style={"position": "fixed", "top": 350, "left": 500, "width": 400},
                     ),
                 ]
+
+

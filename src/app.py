@@ -5,7 +5,7 @@ from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes
 import dash_auth
 from dash_bootstrap_templates import load_figure_template
 from callbacks import callbacks
-
+import datetime as datetime
 
 # Connect the navbar to the index
 from components import components
@@ -20,15 +20,11 @@ load_figure_template("bootstrap")
 # Define the navbar
 nav = components.Navbar()
 
-dbc_css = (
-    "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.1/dbc.min.css"
-)
-
 app = dash.Dash(__name__, 
                 title = 'VisCFDI',
-                external_stylesheets=[dbc.themes.BOOTSTRAP, dbc_css], 
+                external_stylesheets=[dbc.themes.BOOTSTRAP], 
                 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0"}],
-                suppress_callback_exceptions=False)
+                suppress_callback_exceptions=True)
 server = app.server
 
 auth = dash_auth.BasicAuth(
@@ -48,20 +44,16 @@ app.layout = dbc.Container([
     ),
     dbc.Row(
         [
-        dbc.Col(dcc.Location(id='url', refresh=False))   
+        dbc.Col(dcc.Location(id='url', refresh=True))   
         ]
     ),
-
-    html.Br(),
-
     dbc.Row([
         dbc.Col([
-            html.H2("Herramienta para visualización y análisis de datos de CFDI", style={'textAlign': 'center'})
+            html.H3("Herramienta para visualización y análisis de datos de CFDI", style={'textAlign': 'center'})
         ], xs = 12)
-    ]),    
-     
-    html.Hr(),  
-
+    ]),   
+    html.Hr(),   
+       
     dbc.Row([            
         dbc.Col([
             dcc.Upload(
@@ -81,7 +73,8 @@ app.layout = dbc.Container([
                             'borderWidth': '3px',
                             'borderStyle': 'dashed',
                             'borderRadius': '5px',
-                            'textAlign': 'center',                           
+                            'textAlign': 'center', 
+                            'background-color': 'white'                          
                         },
             ),
             html.Div(id="alerta-inicio", style ={'textAlign': 'center'}) 

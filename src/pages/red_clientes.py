@@ -5,12 +5,12 @@ import dash_loading_spinners as dls
 
 # Define the page layout
 layout = dls.Pulse([
-    html.Center(html.H3("Red de Clientes")),    
+    html.Center(html.H4("Red de Clientes")),    
     dbc.Row([   
         dbc.Col([
-                html.P('Provedores', style={'textAlign': 'center', 'color':'#54B4D3'}), 
+                html.P('Provedores', style={'textAlign': 'center', 'color':'#87C1FF'}), 
                 html.P('--->', style={'textAlign': 'center'}),
-                html.P('Clientes', style={'textAlign': 'center', 'color':'orange'}),
+                html.P('Clientes', style={'textAlign': 'center', 'color':'lightgreen'}),
                 html.Div(id = 'select-node-clientes')
             ], xs=12, md=2), #parrafo de select nodes        
         dbc.Col(
@@ -33,6 +33,6 @@ color="#0275d8",
 speed_multiplier=1,
 margin =4,
 width=60,
-fullscreen=True, 
+fullscreen=False, 
 fullscreen_style={'opacity': '0.7'}
 )
