@@ -4,7 +4,7 @@ import visdcc
 import dash_loading_spinners as dls
 
 # Define the page layout
-layout = dls.Pulse([
+layout = dls.Fade([
     html.Center(html.H4("Red de Clientes")),    
     dbc.Row([   
         dbc.Col([
@@ -30,10 +30,6 @@ layout = dls.Pulse([
             ], xs=12, md=10),             
     ])
 ], 
-color="#0275d8",
-speed_multiplier=1,
-margin =4,
-width=60,
-fullscreen=False, 
-fullscreen_style={'opacity': '0.7'}
+color="#3B71CA",
+fullscreen=True
 )

@@ -8,10 +8,12 @@ import datetime as datetime
 from datetime import datetime as dt
 import plotly.express as px
 
-from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes, red_proveedores
+from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes, red_proveedores, no_data
 
 #callbacks
 from callbacks import callbacks
+#callbacks
+from callbacks.callbacks import parse_data
 
 # Connect the navbar to the index
 from components import components
@@ -72,12 +74,12 @@ app.layout = dbc.Container([
                 id="picker-range",
                 start_date_placeholder_text='Fecha inicio',
                 end_date_placeholder_text='Fecha final',
-                number_of_months_shown=2,
+                display_format='DD/MM/YYYY',
                 month_format='DD/MM/YYYY',
                 show_outside_days=True,
-                minimum_nights=0,
+                minimum_nights=0,  
                 style = {'boxShadow': '0.3em 0.3em 1em rgba(0,0,0,0.1)','font-size': '12px','border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate', "margin-left":'5rem'},
-                className='date_picker_style'            
+                className='date_picker_style'
             ),
             ], className="four columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'}),
             html.Div([
@@ -114,22 +116,30 @@ style={'padding': '2rem',  "background-color": '#f2f2f2'})
 
 # Create the callback to handle mutlipage inputs
 @app.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
-def display_page(pathname):
-    if pathname == '/inicio':
-        return inicio.layout 
-    if pathname == '/analisis_clientes':
-        return analisis_clientes.layout
-    if pathname == '/red_clientes':
-        return red_clientes.layout
-    if pathname == '/analisis_proveedores':
-        return analisis_proveedores.layout
-    if pathname == '/red_proveedores':
-        return red_proveedores.layout
-
-    else: # if redirected to unknown link
-        return inicio.layout #"404 Page Error! Please choose a link"
-
+              [Input('url', 'pathname'),
+               Input('upload-data', 'contents'),
+               Input('upload-data', 'filename')])
+def display_page(pathname,contents, filename):
+    if contents:
+        df = parse_data(contents, filename) 
+        if df.empty == False:
+           if pathname == '/inicio':
+               return inicio.layout 
+           if pathname == '/analisis_clientes':
+                return analisis_clientes.layout
+           if pathname == '/red_clientes':
+               return red_clientes.layout
+           if pathname == '/analisis_proveedores':
+               return analisis_proveedores.layout
+           if pathname == '/red_proveedores':
+               return red_proveedores.layout
+           else: # if redirected to unknown link
+               return inicio.layout
+        else:
+            return no_data.layout
+    else:
+        return no_data.layout
+ 
 if __name__ == '__main__':
     app.run_server(debug=True)
 

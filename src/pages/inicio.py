@@ -5,7 +5,7 @@ import dash_loading_spinners as dls
 
 
 # Define the page layout
-layout = dls.Pulse([  
+layout = dls.Fade([  
     dbc.Row(
         dbc.Col(html.H4("Resumen general y tabla de datos",
                         className='text-center'),
@@ -19,15 +19,15 @@ layout = dls.Pulse([
                html.Div([
                html.H5(id='clientes', style={'textAlign': 'center','fontWeight': 'bold'}),
                html.Label('Clientes', style={'textAlign': 'center','paddingTop': '.3rem'}),
-            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'}),
+            ], className="four columns number-stat-box", style={'background-color': 'lightgreen'}),
                html.Div([
                html.Div(id='clientesFact'),
                html.Label('Total facturado', style={'textAlign': 'center','paddingTop': '.3rem'}),
-            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'}),
+            ], className="four columns number-stat-box", style={'background-color': 'lightgreen'}),
                html.Div([
                html.Div(id='clientesSal', style={'fontWeight': 'bold'}),
                html.Label('Saldo insoluto', style={'textAlign': 'center','paddingTop': '.3rem'}),
-            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'})
+            ], className="four columns number-stat-box", style={'background-color': 'lightgreen'})
            ]),
         ], className="six columns",
          style={"background-color": '#f2f2f2', 'padding':'2rem', 'margin':'1rem', 'boxShadow': '0.2em 0.2em 1em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'} ),
@@ -138,12 +138,8 @@ layout = dls.Pulse([
     ]),
 
 ], 
-color="#0275d8",
-speed_multiplier=1,
-margin =4,
-width=60,
-fullscreen=False, 
-fullscreen_style={'opacity': '0.7'},
+color="#3B71CA",
+fullscreen=True
 )
 
     

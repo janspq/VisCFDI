@@ -128,7 +128,8 @@ def mensaje_inicio(contents, filename, value):
     Output('picker-range', 'start_date'),
     Output('picker-range', 'end_date'),   
     [Input('upload-data', 'contents'),
-    Input('upload-data', 'filename')]      
+    Input('upload-data', 'filename')],
+    prevent_initial_call=True
 )
 def update_datepickerrange(contents, filename):
     if contents:
@@ -142,13 +143,24 @@ def update_datepickerrange(contents, filename):
             start_date=min_date
             end_date=max_date
             return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date 
-    else:    
-        min_date_allowed= None
-        max_date_allowed=None
-        initial_visible_month=None
-        start_date=None
-        end_date=None
+        else:
+            min_date = datetime.date.today()
+        max_date = datetime.date.today()        
+        min_date_allowed=min_date
+        max_date_allowed=max_date
+        initial_visible_month=max_date
+        start_date=min_date
+        end_date=max_date
         return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date
+    else:    
+        min_date = datetime.date.today()
+        max_date = datetime.date.today()        
+        min_date_allowed=min_date
+        max_date_allowed=max_date
+        initial_visible_month=max_date
+        start_date=min_date
+        end_date=max_date
+        return min_date_allowed, max_date_allowed, initial_visible_month, start_date, end_date 
     
 
 
@@ -160,7 +172,8 @@ def update_datepickerrange(contents, filename):
     [Input('upload-data', 'contents'),
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
-    Input('picker-range', 'end_date')]
+    Input('picker-range', 'end_date')],
+    prevent_initial_call=True
 )
 def update_dropdown_empresa_base(contents, filename, start_date, end_date):
     if contents:
@@ -1009,7 +1022,7 @@ def open_toast(value, start_date, end_date):
                 duration=1000,
                 dismissable=True,
                 is_open=True,
-                style={"position": "fixed", "top": 250, "right": 300, "width": 200},
+                style={"position": "fixed", "top": 230, "right": 350, "width": 200},
             ),
         ]
     else:
@@ -1024,5 +1037,4 @@ def open_toast(value, start_date, end_date):
                      style={"position": "fixed", "top": 250, "left": 500, "width": 400}
                     ),
                 ]
-
 
