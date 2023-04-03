@@ -84,7 +84,7 @@ def Navbar():
     layout = html.Div([
         dbc.NavbarSimple(
             children=[               
-                dbc.NavItem(dbc.NavLink("Inicio", href="/inicio")),
+                dbc.NavItem(dbc.NavLink("Inicio", href="/inicio", active='exact')),
                 dbc.DropdownMenu(
                     children=[
                         dbc.DropdownMenuItem("Análisis de Clientes", href="/analisis_clientes"),

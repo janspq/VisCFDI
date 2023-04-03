@@ -16,12 +16,12 @@ layout = dls.Pulse([
         
         dbc.Col([
            
-            dcc.Graph(id='line-fig5', figure={})            
+            dcc.Graph(id='line-fig5', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
         ], xs=12, md=6),
 
         dbc.Col([
           
-            dcc.Graph(id='line-fig6', figure={})            
+            dcc.Graph(id='line-fig6', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
         ], xs=12, md=6),
 
     ]),
@@ -30,8 +30,9 @@ layout = dls.Pulse([
 
     dbc.Row([
         dbc.Col([
-            dbc.Label("Distribución de ventas por proveedores y recurrencia", style={"font-weight": "bold"}),
-            dash_table.DataTable(            
+         html.Div([
+            dbc.Label('Distribución de facturación por proveedores y recurrencia', style={"font-weight": "bold"}),
+            dash_table.DataTable(
             id='table_proveedores',           
             editable=False,             # allow editing of data inside all cells
             filter_action="native",       # allow filtering of data by user ('native') or not ('none') no incluido el resumen
@@ -45,7 +46,7 @@ layout = dls.Pulse([
             # selected_rows=[],           # indices of rows that user selects
             page_action="native",       # all data is passed to the table up-front or not ('none')
             page_current=0,             # page number that user is on
-            page_size=11,                # number of rows visible per page
+            page_size=10,                # number of rows visible per page
          
            style_cell_conditional=[
                {
@@ -68,11 +69,12 @@ layout = dls.Pulse([
                 'color': 'black',
                 'fontWeight': 'bold'
             }                      
-        ),        
-       ], className="dbc-row-selectable", xs=12, md=6),
+        ), 
+        ], className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })       
+       ], xs=12, md=6),
 
         dbc.Col([
-            dcc.Graph(id='line-fig8', figure={})
+            dcc.Graph(id='line-fig8', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })
         ], xs=12, md=6)
     ])
 ],

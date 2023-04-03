@@ -1,11 +1,17 @@
 import dash
-import dash_bootstrap_components as dbc
 from dash import html, dcc, html, Input, Output, State
-from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes, red_proveedores
+import dash_bootstrap_components as dbc
+import pandas as pd
+import numpy as np
 import dash_auth
-from dash_bootstrap_templates import load_figure_template
-from callbacks import callbacks
 import datetime as datetime
+from datetime import datetime as dt
+import plotly.express as px
+
+from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes, red_proveedores
+
+#callbacks
+from callbacks import callbacks
 
 # Connect the navbar to the index
 from components import components
@@ -15,11 +21,7 @@ VALID_USERNAME_PASSWORD_PAIRS = {
     'viscfdi': 'msicu2023'
 }
 
-load_figure_template("bootstrap")
-
-# Define the navbar
 nav = components.Navbar()
-
 app = dash.Dash(__name__, 
                 title = 'VisCFDI',
                 external_stylesheets=[dbc.themes.BOOTSTRAP], 
@@ -30,43 +32,28 @@ server = app.server
 auth = dash_auth.BasicAuth(
     app,
     VALID_USERNAME_PASSWORD_PAIRS
-)                
-
+)   
 app.layout = dbc.Container([
-   
-    dbc.Row(
-        [
-            dbc.Col(
-                [
-                    nav
-                ], xs=12)  
-        ]
-    ),
-    dbc.Row(
-        [
-        dbc.Col(dcc.Location(id='url', refresh=True))   
-        ]
-    ),
-    dbc.Row([
-        dbc.Col([
-            html.H3("Herramienta para visualización y análisis de datos de CFDI", style={'textAlign': 'center'})
-        ], xs = 12)
-    ]),   
-    html.Hr(),   
-       
-    dbc.Row([            
-        dbc.Col([
+    html.Div([nav]),
+    html.Div([
+        html.H3('Herramienta para visualización y análisis de datos fiscales')
+    ], style={'textAlign': 'center'}),
+    
+    html.Div([
+        ################### Filter box ###################### 
+        html.Div([
+            html.Div([
             dcc.Upload(
-                        id='upload-data',                    
-                        className='control-upload',
+                        id='upload-data',
                         children=html.Div([
-                            'Arrastrar y soltar ó ',
-                            html.A('Seleccione archivo',
+                            'Arrastrar ó ',
+                            html.A('Seleccionar',
                                   style={'color': 'blue',
                                       'text-decoration-line': 'underline'}),
                                       '(.csv)'
-                        ]),
-                        style={                            
+                        ], style ={"background-color":'white'}),
+                        style={    
+                            'boxShadow': '0.3em 0.3em 1em rgba(0,0,0,0.1)',                  
                             'width': '100%',
                             'height': '60px',
                             'lineHeight': '50px',
@@ -77,48 +64,53 @@ app.layout = dbc.Container([
                             'background-color': 'white'                          
                         },
             ),
-            html.Div(id="alerta-inicio", style ={'textAlign': 'center'}) 
-        ], xs=12, md=5),            
-
-        dbc.Col([
-            html.H6("Rango de fechas:"),
+            html.Div(id="alerta-inicio", style ={'textAlign': 'center'}),
+            ], className="four columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'}),
+            html.Div([
+            html.Label('Rango de fechas (Día-Mes-Año):', style = {"margin-left":'5rem'}),
             dcc.DatePickerRange(
                 id="picker-range",
-                display_format='DD/MM/YYYY',
-                minimum_nights=0, 
                 start_date_placeholder_text='Fecha inicio',
                 end_date_placeholder_text='Fecha final',
-                style = {'font-size': '12px','display': 'inline-block', 'border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate'},
-                className='date_picker_style'                        
-            )
-        ], xs=6, md={"size": 3, "offset": 1}),  
-
-        dbc.Col([
-            html.Div(id='info-toast'),
-            html.Div(id='info-toast2'),
-            html.H6("Empresa a analizar:"),
+                number_of_months_shown=2,
+                month_format='DD/MM/YYYY',
+                show_outside_days=True,
+                minimum_nights=0,
+                style = {'boxShadow': '0.3em 0.3em 1em rgba(0,0,0,0.1)','font-size': '12px','border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate', "margin-left":'5rem'},
+                className='date_picker_style'            
+            ),
+            ], className="four columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'}),
+            html.Div([
+            html.Label('Empresa a analizar:'),
             dcc.Dropdown(
                 id='dropdown_empresa_base',
                 clearable=False, 
-                placeholder='Seleccionar empresa',                                                  
-                className="dropdown"                                                                         
+                placeholder='Seleccionar empresa',
+                style={'boxShadow': '0.3em 0.3em 1em rgba(0,0,0,0.1)'}                                                            
             ),
-            html.Div(id="alerta-dropdown", style ={'textAlign': 'center'})                            
-        ], xs=6, md=2)
-             
-    ]),
+            html.Div(id="alerta-dropdown", style ={'textAlign': 'center'}),
+            ], className="three columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'})
+
+        ], className="twelve columns",
+        style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem', 'boxShadow': '1em -1em 5em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'} ),
+
+        ######################################### 
+        # Number statistics & number of accidents each day
+
+        html.Div([
+                html.Div(id='page-content')
+            ], className="twleve columns", style={'backgroundColor': '#f2f2f2', 'margin': '1rem'}),
+    ], style={'display': 'flex', 'flex-wrap': 'wrap'}),
     
-    html.Hr(),    
-        
-    dbc.Row(
-        [            
-           html.Div(id='page-content', children=[])
-        ]
-    )
-], 
+    html.Div(id='info-toast'),
+    html.Div(id='info-toast2'),    
+    dcc.Location(id='url', refresh=True)
+    
+],
 fluid=True,
-className="dbc"
-)
+className="dbc",
+style={'padding': '2rem',  "background-color": '#f2f2f2'})
+
 
 # Create the callback to handle mutlipage inputs
 @app.callback(Output('page-content', 'children'),
@@ -138,9 +130,9 @@ def display_page(pathname):
     else: # if redirected to unknown link
         return inicio.layout #"404 Page Error! Please choose a link"
 
-
-
-# Run the app on localhost:8050
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
+
+
+
 

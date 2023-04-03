@@ -8,26 +8,27 @@ layout = dls.Pulse([
     html.Center(html.H4("Red de Clientes")),    
     dbc.Row([   
         dbc.Col([
-                html.P('Provedores', style={'textAlign': 'center', 'color':'#87C1FF'}), 
-                html.P('--->', style={'textAlign': 'center'}),
-                html.P('Clientes', style={'textAlign': 'center', 'color':'lightgreen'}),
-                html.Div(id = 'select-node-clientes')
-            ], xs=12, md=2), #parrafo de select nodes        
-        dbc.Col(
-                visdcc.Network(id = 'net-clientes',
+            html.Br(),
+            html.Label('Provedores', style={'textAlign': 'center', 'color':'#87C1FF'}), 
+            html.Label('--->', style={'textAlign': 'center'}),
+            html.Label('Clientes', style={'textAlign': 'center', 'color':'lightgreen'}),
+            html.Div(id = 'select-node-clientes')
+        ], xs=12, md=2), #parrafo de select nodes        
+        dbc.Col([
+            html.Div([
+                visdcc.Network(
+                       id = 'net-clientes',
                                selection = {'nodes':[], 'edges':[]},
                                style={'background-color': "#222222"}, 
                                options = dict(height= '750px',
                                                 width= '100%',
-                                                interaction = dict(hover= True),
                                                 physics = {'barnesHut': {'gravitationalConstant': -8000,
                                                                           'springConstant': 0.01, 'springLength': 100}},
-                                                
-                                                                                                 
-                                              )
-                ), xs=12, md=10),    
-            
-        ])
+                                            )
+                )
+            ], className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })    
+            ], xs=12, md=10),             
+    ])
 ], 
 color="#0275d8",
 speed_multiplier=1,

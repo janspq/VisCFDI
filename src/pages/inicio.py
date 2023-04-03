@@ -5,21 +5,55 @@ import dash_loading_spinners as dls
 
 
 # Define the page layout
-layout = dls.Pulse([    
-    dbc.Row([
-        dbc.Col([html.H4("INGRESOS",
-                        className='text-center')
-    ], style={'background-color': 'lightgreen', 'margin-right': '10px', 'margin-left': '10px'}),
-        dbc.Col([html.H4("EGRESOS",
-                        className='text-center')
-    ], style={'background-color': 'lightblue', 'margin-right': '10px', 'margin-left': '10px'})
-    ]),
-    html.Br(),
+layout = dls.Pulse([  
+    dbc.Row(
+        dbc.Col(html.H4("Resumen general y tabla de datos",
+                        className='text-center'),
+                        width = 12)
+    ),  
 
     dbc.Row([
-        html.Div(id="summary")
+        html.Div([
+           dbc.Row([html.H5("INGRESOS", className='text-center',style={'textAlign': 'center','fontWeight': 'bold'})]),
+           dbc.Row([
+               html.Div([
+               html.H5(id='clientes', style={'textAlign': 'center','fontWeight': 'bold'}),
+               html.Label('Clientes', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'}),
+               html.Div([
+               html.Div(id='clientesFact'),
+               html.Label('Total facturado', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'}),
+               html.Div([
+               html.Div(id='clientesSal', style={'fontWeight': 'bold'}),
+               html.Label('Saldo insoluto', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': '#abf7b1'})
+           ]),
+        ], className="six columns",
+         style={"background-color": '#f2f2f2', 'padding':'2rem', 'margin':'1rem', 'boxShadow': '0.2em 0.2em 1em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'} ),
+       
+        html.Div([
+           dbc.Row([html.H5("EGRESOS", className='text-center',style={'textAlign': 'center','fontWeight': 'bold'})]),
+           dbc.Row([
+               html.Div([
+               html.H5(id='proveedores', style={'textAlign': 'center','fontWeight': 'bold'}),
+               html.Label('Proveedores', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': 'lightblue'}),
+             html.Div([
+               html.Div(id='proveedoresFact', style={'fontWeight': 'bold'}),
+               html.Label('Total facturado', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': 'lightblue'}),
+             html.Div([
+               html.Div(id='proveedoresSal', style={'fontWeight': 'bold'}),
+               html.Label('Saldo insoluto', style={'textAlign': 'center','paddingTop': '.3rem'}),
+            ], className="four columns number-stat-box", style={'background-color': 'lightblue'})
+           ]),
+        ], className="six columns",
+         style={"background-color": '#f2f2f2', 'padding':'2rem', 'margin':'1rem', 'boxShadow': '0.2em 0.2em 1em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'} ),
+      
     ]),
-    
+
+
     dbc.Row([
         dbc.Col([
             html.H6("Clientes o proveedores:"),
@@ -36,7 +70,7 @@ layout = dls.Pulse([
 
         ], xs=6, md=3),
         dbc.Col([
-                    html.H6("# cliente o proveedor:", style={'textAlign': 'center'}),
+                    html.Label("# cliente o proveedor:", style={'textAlign': 'center'}),
                     dcc.Dropdown(
                             id='dropdown_cliente_proveedor',                                                          
                             className="dropdown"                                             
@@ -47,7 +81,7 @@ layout = dls.Pulse([
      
     dbc.Row([
        dbc.Col([
-        html.Div(
+        html.Div([
            dbc.Col([
                     dcc.Dropdown(
                             id='dropdown_facturas',
@@ -60,7 +94,7 @@ layout = dls.Pulse([
                             className="dropdown"                                             
                         )
                 ], xs=6, md=2)
-        ),
+        ]),
         dash_table.DataTable(
             id='table',           
             editable=False,             # allow editing of data inside all cells
@@ -98,7 +132,8 @@ layout = dls.Pulse([
                 'color': 'black',
                 'fontWeight': 'bold'
             }               
-        ),
+            ),
+        
        ])
     ]),
 
@@ -107,7 +142,7 @@ color="#0275d8",
 speed_multiplier=1,
 margin =4,
 width=60,
-fullscreen=True, 
+fullscreen=False, 
 fullscreen_style={'opacity': '0.7'},
 )
 

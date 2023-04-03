@@ -71,16 +71,13 @@ def mensaje_inicio(contents, filename):
     if contents:
         df = parse_data(contents, filename) 
         if df.empty == False:
-           return [           
-                dbc.Col([
-                    html.P('Cargado: '+ filename, style={'textAlign': 'center'})
-                ]),           
-            ]                       
+           return  html.Label('Cargado: '+ filename, style={'textAlign': 'center'})
+                           
         else:
             return [
                 dbc.Alert(
                         [
-                            html.P('Cargado: '+ filename, style={'textAlign': 'center'})                                                
+                            html.Label('Cargado: '+ filename, style={'textAlign': 'center'})                                                
                         ],
                         color = 'danger'      
                         )
@@ -185,7 +182,7 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
                 duration=1000,
                 icon="success",
                 is_open=True,
-                style={"position": "fixed", "top": 350, "left": 500, "width": 200},
+                style={"position": "fixed", "top": 250, "left": 300, "width": 200},
             ),
             ]
             return lst, children
@@ -198,7 +195,7 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
                 dismissable=True,
                 icon="danger",
                 is_open=True,
-                style={"position": "fixed", "top": 150, "left": 500, "width": 200},
+                style={"position": "fixed", "top": 250, "left": 300, "width": 200},
             ),
             ]
             lst=[]
@@ -207,21 +204,25 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
         children = [
                 dbc.Toast(
                 id="toast3",
-                header="Para comenzar vaya al panel principal y cargue un archivo por favor!!!",
+                header="En este panel principal cargue un archivo por favor!!!",
                 icon="info",
                 dismissable=True,
                 is_open=True,
-                style={"position": "fixed", "top": 350, "left": 500, "width": 400},
+                style={"position": "fixed", "top": 250, "left": 500, "width": 400},
             ),
             ]
         lst=[]
         return lst, children
 
-
-
 # #Devolución de llamada del summary------------------------------------
 @callback(
-    Output("summary", "children"),
+    Output('clientes', 'children'),
+    Output('clientesFact', 'children'),
+    Output('clientesSal', 'children'),
+    Output('proveedores', 'children'),
+    Output('proveedoresFact', 'children'),
+    Output('proveedoresSal', 'children'),
+
     [Input('table', 'data'),   
     Input('dropdown_empresa_base', 'value')]
 
@@ -244,84 +245,32 @@ def create_summary(data, value):
           
         n_clientes = len(pd.unique(dff_clientes['Clientes']))
         facturado = dff_clientes[' Total '].sum()
-        facturado = float("{:.2f}".format(facturado))        
+        facturado = float("{:.2f}".format(facturado)) 
+        facturado = html.H5('$'+ f"{facturado:,}", style={'textAlign': 'center','fontWeight': 'bold'})
+
         por_cobrar = dff_clientes[' Saldo insoluto '].sum()
         por_cobrar = float("{:.2f}".format(por_cobrar))
+        por_cobrar= html.H5('$'+ f"{por_cobrar:,}", style={'textAlign': 'center','fontWeight': 'bold'})
 
 
         n_proveedores = len(pd.unique(dff_proveedores['Proveedores'])) 
         pagado = dff_proveedores[' Total '].sum()
-        pagado = float("{:.2f}".format(pagado))         
+        pagado = float("{:.2f}".format(pagado)) 
+        pagado= html.H5('$'+ f"{pagado:,}", style={'textAlign': 'center','fontWeight': 'bold'})
+
         por_pagar = dff_proveedores[' Saldo insoluto '].sum()
         por_pagar = float("{:.2f}".format(por_pagar))
+        por_pagar= html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center','fontWeight': 'bold'})
+
+
  
-        children = [
-            dbc.Row([
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                          
-                            html.H5(n_clientes, style={'textAlign': 'center'}),
-                            html.H6("Clientes", style={'textAlign': 'center'})                                                        
-                        ],
-                        color="lightgreen",
-                    ),
-                ], width=2),
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                            
-                            html.H5('$'+ f"{facturado:,}", style={'textAlign': 'center'}),
-                            html.H6("Total", style={'textAlign': 'center'})
-                        ],
-                        color="lightgreen",
-                    ),
-                ], width=2),
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                            html.H5('$'+ f"{por_cobrar:,}", style={'textAlign': 'center'}),
-                            html.H6("Saldo insoluto", style={'textAlign': 'center'})
-                           
-                        ],
-                        color="lightgreen",
-                    ),
-                ], width=2),
-       
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                            html.H5(n_proveedores, style={'textAlign': 'center'}),
-                            html.H6("Proveedores", style={'textAlign': 'center'})                    
-                        ],
-                        color="lightblue",
-                    ),
-                ], width=2),
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                            html.H5('$'+ f"{pagado:,}", style={'textAlign': 'center'}),
-                            html.H6("Total", style={'textAlign': 'center'})
-                           
-                        ],
-                        color="lightblue",
-                    ),
-                ], width=2),
-                dbc.Col([
-                    dbc.Alert(
-                        [
-                            html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center'}),
-                            html.H6("Saldo insoluto", style={'textAlign': 'center'})
-                           
-                        ],
-                        color="lightblue",
-                    ),
-                ], width=2),
-            ])
-        ] 
-        return children   
+
+        return n_clientes, facturado, por_cobrar, n_proveedores, pagado, por_pagar    
     else:
         return dash.no_update
+
+
+
 
 
 # Impresión de la tabla aplicando radioitem y dropdowns
@@ -707,20 +656,20 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
             if x['nodes'][0] != value:
                 return [
                     html.Br(),
-                    html.H5(nodo),
+                    html.H6(nodo),
                     html.Br(),
-                    html.H6('Clientes: ' + nclientes),            
-                    html.H6('Total: ' + '$' + f"{totalc:,}"), 
-                    html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
-                    html.H6('Cant. Fact: ' + cant_facturasc),
+                    html.Label('Clientes: ' + nclientes),            
+                    html.Label('Total: ' + '$' + f"{totalc:,}"), 
+                    html.Label('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
+                    html.Label('Cant. Fact: ' + cant_facturasc),
                     html.Br(),
-                    html.H6('Proveedores: ' + nproveedores),                 
-                    html.H6('Total: ' + '$' + f"{totalp:,}"),
-                    html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
-                    html.H6('Cant. Fact: ' + cant_facturasp)              
+                    html.Label('Proveedores: ' + nproveedores),                 
+                    html.Label('Total: ' + '$' + f"{totalp:,}"),
+                    html.Label('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
+                    html.Label('Cant. Fact: ' + cant_facturasp)              
                     ]
             return [ 
-                html.H6('Analizada: ' + value)            
+                html.Label('Analizada: ' + value)            
                 ]
             
         else:
@@ -743,10 +692,10 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
   
             if x['nodes'][0] != value:
                 return [
-                    html.H6('Cliente: ' + nodo),                
-                    html.H6('Total: ' + '$' + total),
-                    html.H6('Saldo insoluto: ' + '$' + saldo_insoluto),
-                    html.H6('Cant. Fact: ' + cant_facturas)              
+                    html.Label('Cliente: ' + nodo),                
+                    html.Label('Total: ' + '$' + total),
+                    html.Label('Saldo insoluto: ' + '$' + saldo_insoluto),
+                    html.Label('Cant. Fact: ' + cant_facturas)              
                     ]
             return [ 
                 html.H6('Analizada: ' + value)            
@@ -754,7 +703,7 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
   
     else:
         return [
-      html.H6('"Seleccionar nodo proveedor para ver detalles"', style={'textAlign': 'center'})
+      html.Label('"Seleccionar nodo proveedor para ver detalles"', style={'textAlign': 'center'})
     ]
 
 ###################### Devolución de llamadas de análisis de proveedores ###################################
@@ -977,20 +926,20 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
            if x['nodes'][0] != value:
                return [
                    html.Br(),
-                   html.H5(nodo),                    
+                   html.H6(nodo),                    
                    html.Br(),
-                   html.H6('Proveedores: ' + nproveedores),                 
-                   html.H6('Total: ' + '$' + f"{totalp:,}"),
-                   html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
-                   html.H6('Cant. Fact: ' + cant_facturasp),
+                   html.Label('Proveedores: ' + nproveedores),                 
+                   html.Label('Total: ' + '$' + f"{totalp:,}"),
+                   html.Label('Saldo insoluto: ' + '$' + f"{saldo_insolutop:,}"),
+                   html.Label('Cant. Fact: ' + cant_facturasp),
                    html.Br(),
-                   html.H6('Clientes: ' + nclientes),            
-                   html.H6('Total: ' + '$' + f"{totalc:,}"), 
-                   html.H6('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
-                   html.H6('Cant. Fact: ' + cant_facturasc),               
+                   html.Label('Clientes: ' + nclientes),            
+                   html.Label('Total: ' + '$' + f"{totalc:,}"), 
+                   html.Label('Saldo insoluto: ' + '$' + f"{saldo_insolutoc:,}"),
+                   html.Label('Cant. Fact: ' + cant_facturasc),               
                    ]
            return [ 
-               html.H6('Analizada: ' + value)            
+               html.Label('Analizada: ' + value)            
                ]
             
         else:
@@ -1013,18 +962,18 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
   
             if x['nodes'][0] != value:
                 return [
-                    html.H6('Proveedor: ' + nodo),                
-                    html.H6('Total: ' + '$' + total),
-                    html.H6('Saldo insoluto: ' + '$' + saldo_insoluto),
-                    html.H6('Cant. Fact: ' + cant_facturas)              
+                    html.Label('Proveedor: ' + nodo),                
+                    html.Label('Total: ' + '$' + total),
+                    html.Label('Saldo insoluto: ' + '$' + saldo_insoluto),
+                    html.Label('Cant. Fact: ' + cant_facturas)              
                     ]
             return [ 
-                html.H6('Analizada: ' + value)            
+                html.Label('Analizada: ' + value)            
                 ]
   
     else:
         return [
-      html.H6('"Seleccionar nodo proveedor para ver detalles"', style={'textAlign': 'center'})
+      html.Label('"Seleccionar nodo proveedor para ver detalles"', style={'textAlign': 'center'})
     ]   
 
 def toggle_modal(n1, n2, is_open):
@@ -1060,7 +1009,7 @@ def open_toast(value, start_date, end_date):
                 duration=1000,
                 dismissable=True,
                 is_open=True,
-                style={"position": "fixed", "top": 200, "left": 500, "width": 200},
+                style={"position": "fixed", "top": 250, "right": 300, "width": 200},
             ),
         ]
     else:
@@ -1072,7 +1021,7 @@ def open_toast(value, start_date, end_date):
                      icon="info",
                      dismissable=True,
                      is_open=True,
-                     style={"position": "fixed", "top": 350, "left": 500, "width": 400},
+                     style={"position": "fixed", "top": 250, "left": 500, "width": 400}
                     ),
                 ]
 
