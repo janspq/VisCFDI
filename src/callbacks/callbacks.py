@@ -227,223 +227,173 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
         lst=[]
         return lst, children
 
-# #Devolución de llamada del summary------------------------------------
+
+############## Impresión de la tabla  #########
 @callback(
-    Output('clientes', 'children'),
-    Output('clientesFact', 'children'),
-    Output('clientesSal', 'children'),
-    Output('proveedores', 'children'),
-    Output('proveedoresFact', 'children'),
-    Output('proveedoresSal', 'children'),
-
-    [Input('table', 'data'),   
-    Input('dropdown_empresa_base', 'value')]
-
-)    
-def create_summary(data, value):
-    if value:
-        dff = pd.DataFrame(data)
-        
-        if value=='Seleccionar todo':
-            # dataframe filtrado por fechas de los proveedores  
-            dff_proveedores = dff
-            # dataframe filtrado por fechas de los clientes   
-            dff_clientes = dff      
-        else:
-
-            # dataframe filtrado por fechas de los proveedores  
-            dff_proveedores = dff.loc[dff['Clientes']==value] 
-            # dataframe filtrado por fechas de los clientes   
-            dff_clientes = dff.loc[dff['Proveedores']==value] 
-          
-        n_clientes = len(pd.unique(dff_clientes['Clientes']))
-        facturado = dff_clientes[' Total '].sum()
-        facturado = float("{:.2f}".format(facturado)) 
-        facturado = html.H5('$'+ f"{facturado:,}", style={'textAlign': 'center','fontWeight': 'bold'})
-
-        por_cobrar = dff_clientes[' Saldo insoluto '].sum()
-        por_cobrar = float("{:.2f}".format(por_cobrar))
-        por_cobrar= html.H5('$'+ f"{por_cobrar:,}", style={'textAlign': 'center','fontWeight': 'bold'})
-
-
-        n_proveedores = len(pd.unique(dff_proveedores['Proveedores'])) 
-        pagado = dff_proveedores[' Total '].sum()
-        pagado = float("{:.2f}".format(pagado)) 
-        pagado= html.H5('$'+ f"{pagado:,}", style={'textAlign': 'center','fontWeight': 'bold'})
-
-        por_pagar = dff_proveedores[' Saldo insoluto '].sum()
-        por_pagar = float("{:.2f}".format(por_pagar))
-        por_pagar= html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center','fontWeight': 'bold'})
-
-
- 
-
-        return n_clientes, facturado, por_cobrar, n_proveedores, pagado, por_pagar    
-    else:
-        return dash.no_update
-
-
-
-
-
-# Impresión de la tabla aplicando radioitem y dropdowns
-@callback(
-    Output('table', 'data'),
-    Output('table', 'columns'),
+    Output('datatable-interactivity', 'data'),
+    Output('datatable-interactivity', 'columns'),
     [Input('upload-data', 'contents'),
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date'),
-    Input('dropdown_empresa_base', 'value'),
-    Input('tipo_empresa_radioitem', 'value'),
-    Input('dropdown_cliente_proveedor', 'value'),
-    Input('dropdown_facturas', 'value')]
+    Input('dropdown_empresa_base', 'value')]
 )
-def create_table(contents, filename, start_date, end_date, value, item, valuecp, valuev):
-
+def create_table(contents, filename, start_date, end_date, value):
     if value :
-
         df = parse_data(contents, filename) 
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
         dff = df.loc[mask]
         dff['Fecha factura'] = dff['Fecha factura'].dt.date
 
         if value=='Seleccionar todo':
-            dft = dff
-
-            if item=='Proveedores':
-                if valuecp is None:
-                    dftabla=dft
-                else:
-                    dftabla = dft.loc[dft['Proveedores']==valuecp] 
-
-            elif item=='Clientes': 
-                if valuecp is None:
-                    dftabla=dft                       
-                else:
-                    dftabla = dft.loc[dft['Clientes']==valuecp]
-            else:
-                if valuecp is None:
-                    dftabla=dft
-                else:
-                   dftabla = dft.loc[(dft['Proveedores'] == valuecp) | (dft['Clientes'] == valuecp)]
-                   
-
-        else:
-
-            dff=dff.loc[(dff['Proveedores'] == value) | (dff['Clientes'] == value)]
-
-            if item=='Proveedores':
-                # dataframe filtrado por fechas de los proveedores
-                dft = dff.loc[dff['Clientes']==value]
-
-                if valuecp is None:
-                    dftabla=dft
-                else:
-                    dftabla = dft.loc[dft['Proveedores']==valuecp]
-
-            elif item=='Clientes':
-                # dataframe filtrado por fechas de los clientes   
-                dft = dff.loc[dff['Proveedores']==value]
-
-                if valuecp is None:
-                    dftabla=dft                       
-                else:
-                    dftabla = dft.loc[dft['Clientes']==valuecp]
-            
-            else:
-                dft=dff
-                if valuecp is None:
-                    dftabla=dft                       
-                else:
-                    dftabla = dft.loc[(dft['Proveedores'] == valuecp) | (dft['Clientes'] == valuecp)]
-        
-        if valuev == 'Facturas vigentes':
-            dftabla_vigente =dftabla.loc[df['Estatus']=='Vigente']
-            data = dftabla_vigente.to_dict('records')
+            dftabla = dff  
+            data = dftabla.to_dict('records')
             columns = [
-            {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == "Tipo de cambio" or i == " Total " or i == " Saldo insoluto "
-            else {"name": i, "id": i, "deletable": False, "selectable": True}
-            for i in dftabla_vigente.columns
-            ]
+            {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
+            if i == "Proveedores"or i == "Clientes" or i == " Total " or i == " Saldo insoluto "
+            else {"name": i, "id": i, "deletable": True, "selectable": False}
+            for i in dftabla.columns
+            ] 
+            return data, columns         
+    
         else:
-          dftabla_cancelada= dftabla.loc[df['Estatus']=='Cancelada']
-          data = dftabla_cancelada.to_dict('records')
-          columns = [
-            {"name": i+'($)', "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == "Tipo de cambio" or i == " Total " or i == " Saldo insoluto "
-            else {"name": i, "id": i, "deletable": False, "selectable": True}
-            for i in dftabla_cancelada.columns
-            ]    
-
-        return data, columns
+            dff=dff.loc[(dff['Proveedores'] == value) | (dff['Clientes'] == value)]
+            dftabla = dff  
+            data = dftabla.to_dict('records')
+            columns = [
+            {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
+            if i == "Proveedores"or i == "Clientes" or i == " Total " or i == " Saldo insoluto "
+            else {"name": i, "id": i, "deletable": True, "selectable": False}
+            for i in dftabla.columns
+            ] 
+            return data, columns 
+        
     else:
         return dash.no_update
+    
+
+
   
-#Devolución de llamada del dropdown_cliente_proveedor
-@callback(
-    Output('dropdown_cliente_proveedor', 'options'),
-   [Input('upload-data', 'contents'),
-    Input('upload-data', 'filename'),
-    Input('picker-range', 'start_date'),
-    Input('picker-range', 'end_date'),
-    Input('tipo_empresa_radioitem', 'value'),
-    Input('dropdown_empresa_base', 'value')]   
+####  Devolución de llamada para el summary ###########
+@callback(    
+    Output('summary', 'children'),
+    [Input('datatable-interactivity', "derived_virtual_data"),
+    Input('dropdown_empresa_base', 'value')],
+    prevent_initial_callbacks=True
 )
-def update_dropdown_cliente_proveedor(contents, filename, start_date, end_date, item, value):
-    if value:
+def update_bar(all_rows_data, value):
+    if all_rows_data:
+        dff = pd.DataFrame(all_rows_data)
+        dff=dff.assign(Facturas=1)
+        if value=='Seleccionar todo':
+            proveedorest = len(pd.unique(dff['Proveedores']))
+            clientest = len(pd.unique(dff['Clientes']))
 
-        df = parse_data(contents, filename)
-        mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
-        dff = df.loc[mask]
-
-        if value =='Seleccionar todo':
-            proveedores = dff['Proveedores'].unique()
-            clientes = dff['Clientes'].unique()
-            todos = np.append(proveedores, clientes)
-            todos = np.unique(todos)
-
-            if item=='Proveedores':
-                lst = [{'label': i, 'value': i} for i in proveedores]
-                return lst
+            facturadot = dff[' Total '].sum()
+            facturadot = float("{:.2f}".format(facturadot)) 
             
-            elif item=='Clientes':
-                lst = [{'label': i, 'value': i} for i in clientes]
-                return lst
-            else:
-                lst = [{'label': i, 'value': i} for i in todos]
-                return lst 
-       
+
+            saldot = dff[' Saldo insoluto '].sum()
+            saldot = float("{:.2f}".format(saldot))
+            
+
+            nfacturas = dff['Facturas'].sum()
+
+            children =[
+                html.Div([
+                     html.Div([
+                            html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'green'}),
+                            html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="two columns number-stat-box"),
+                         html.Div([
+                            html.H4(clientest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'blue'}),
+                            html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="two columns number-stat-box"),
+                        
+                        html.Div([
+                            html.H4('$'+ f"{facturadot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'purple'}),
+                            html.Label('Facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="three columns number-stat-box"),
+                        html.Div([
+                            html.H4('$'+ f"{saldot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'red'}),
+                            html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="three columns number-stat-box"),
+                         html.Div([
+                            html.H4(nfacturas, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#A21A24'}),
+                            html.Label('Facturas', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="two columns number-stat-box"),                 
+                ], className="twelve columns",
+                style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'}),
+            ]
+            
 
         else:
+
             # dataframe filtrado por fechas de los proveedores  
             dff_proveedores = dff.loc[dff['Clientes']==value] 
-            proveedores = dff_proveedores['Proveedores'].unique()
-
-            # dataframe filtrado por fechas de los clientes         
+            # dataframe filtrado por fechas de los clientes   
             dff_clientes = dff.loc[dff['Proveedores']==value]
-            clientes = dff_clientes['Clientes'].unique()
-        
-            # listado de proveedores + clientes
-            todos = np.append(proveedores, clientes)
-            todos = np.unique(todos)
 
-            if item=='Proveedores':
-                lst = [{'label': i, 'value': i} for i in proveedores]
-                return lst
+            n_clientes = len(pd.unique(dff_clientes['Clientes']))
+            facturadoc = dff_clientes[' Total '].sum()
+            facturadoc = float("{:.2f}".format(facturadoc)) 
             
-            elif item=='Clientes':
-                lst = [{'label': i, 'value': i} for i in clientes]
-                return lst
-            else:
-                lst = [{'label': i, 'value': i} for i in todos]
-                return lst 
-        
-         
-    
+
+            por_cobrar = dff_clientes[' Saldo insoluto '].sum()
+            por_cobrar = float("{:.2f}".format(por_cobrar))
+            
+            n_proveedores = len(pd.unique(dff_proveedores['Proveedores'])) 
+            facturadop = dff_proveedores[' Total '].sum()
+            facturadop = float("{:.2f}".format(facturadop)) 
+            
+
+            por_pagar = dff_proveedores[' Saldo insoluto '].sum()
+            por_pagar = float("{:.2f}".format(por_pagar))
+           
+           
+            children =[
+                html.Div([
+                    dbc.Row([html.H5("INGRESOS", className='text-center',style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'})]),
+                    dbc.Row([                        
+                        html.Div([
+                            html.H5(n_clientes, className='text-center', style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'}),
+                            html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
+                        html.Div([
+                            html.H5('$'+ f"{facturadoc:,}",className='text-center', style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'}),
+                            html.Label('Total facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
+                        html.Div([
+                            html.H5('$'+ f"{por_cobrar:,}", className='text-center', style={'color': '#06c258', 'textAlign': 'center','fontWeight': 'bold'}),
+                            html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'})
+                    ]),
+                ], className="six columns",
+                style={"background-color": '#f2f2f2','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+       
+                html.Div([
+                    dbc.Row([html.H5("EGRESOS", className='text-center',style={'color': '#004999','textAlign': 'center','fontWeight': 'bold'})]),
+                    dbc.Row([
+                        html.Div([
+                           html.H5(n_proveedores, style={'textAlign': 'center','fontWeight': 'bold','color': '#004999'}),
+                           html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #004999'}),
+                        html.Div([
+                            html.H5('$'+ f"{facturadop:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004999'}),
+                            html.Label('Total facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #004999'}),
+                        html.Div([
+                            html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004999'}),
+                            html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                        ], className="four columns number-stat-box",style={'boxShadow': '0.1em 0.1em 0.3em #004999'})
+                    ]),
+                ], className="six columns",
+                style={"background-color": '#f2f2f2','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+            ]
+
+        return children
     else:
-        return dash.no_update 
+        dash.no_update
 
 ################# Devolución de llamadas de análisis de clientes ############################################ 
 @callback(
@@ -462,6 +412,7 @@ def update_dropdown_cliente_proveedor(contents, filename, start_date, end_date, 
 def create_graph_clientes(contents, filename, start_date, end_date, value):
     if value:
         df = parse_data(contents, filename)
+
         df = df.loc[df['Estatus']=='Vigente']         
      
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        

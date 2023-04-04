@@ -99,9 +99,10 @@ app.layout = dbc.Container([
         ######################################### 
         # Number statistics & number of accidents each day
 
-        html.Div([
-                html.Div(id='page-content')
-            ], className="twleve columns", style={'backgroundColor': '#f2f2f2', 'margin': '1rem'}),
+        html.Div(id='page-content', className="twelve columns",
+                style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem', 'boxShadow': '1em -1em 5em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'}
+                ),
+
     ], style={'display': 'flex', 'flex-wrap': 'wrap'}),
     
     html.Div(id='info-toast'),
@@ -118,9 +119,10 @@ style={'padding': '2rem',  "background-color": '#f2f2f2'})
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname'),
                Input('upload-data', 'contents'),
-               Input('upload-data', 'filename')])
-def display_page(pathname,contents, filename):
-    if contents:
+               Input('upload-data', 'filename'),
+               Input('dropdown_empresa_base', 'value')])
+def display_page(pathname,contents, filename, value):
+    if value:
         df = parse_data(contents, filename) 
         if df.empty == False:
            if pathname == '/inicio':

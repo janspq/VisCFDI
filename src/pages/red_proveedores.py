@@ -5,7 +5,11 @@ import dash_loading_spinners as dls
 
 # Define the page layout
 layout = dls.Fade([
-    html.Center(html.H4("Red de Proveedores")),    
+    dbc.Row(
+        dbc.Col(html.H4("Red de proveedores",
+                        className='text-center'),
+                        width = 12)
+    ),   
     dbc.Row([ 
         dbc.Col([ 
             html.Br(), 
