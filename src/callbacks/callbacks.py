@@ -5,7 +5,6 @@ from dash import html, Input, Output, callback, State
 import base64
 import io
 import datetime as datetime
-
 import plotly.express as px
 import plotly.graph_objects as go
  
@@ -236,9 +235,10 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date'),
-    Input('dropdown_empresa_base', 'value')]
+    Input('dropdown_empresa_base', 'value'),
+    Input('dropdown_facturas', 'value')]
 )
-def create_table(contents, filename, start_date, end_date, value):
+def create_table(contents, filename, start_date, end_date, value, valuev):
     if value :
         df = parse_data(contents, filename) 
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
@@ -246,7 +246,13 @@ def create_table(contents, filename, start_date, end_date, value):
         dff['Fecha factura'] = dff['Fecha factura'].dt.date
 
         if value=='Seleccionar todo':
-            dftabla = dff  
+            if valuev == 'Facturas vigentes':
+                dftabla =dff.loc[dff['Estatus']=='Vigente']
+            elif valuev == 'Facturas canceladas':
+                dftabla =dff.loc[dff['Estatus']=='Cancelada']       
+            else:
+                dftabla=dff
+
             data = dftabla.to_dict('records')
             columns = [
             {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
@@ -258,7 +264,13 @@ def create_table(contents, filename, start_date, end_date, value):
     
         else:
             dff=dff.loc[(dff['Proveedores'] == value) | (dff['Clientes'] == value)]
-            dftabla = dff  
+            if valuev == 'Facturas vigentes':
+                dftabla =dff.loc[dff['Estatus']=='Vigente']
+            elif valuev == 'Facturas canceladas':
+                dftabla =dff.loc[dff['Estatus']=='Cancelada']       
+            else:
+                dftabla=dff
+            
             data = dftabla.to_dict('records')
             columns = [
             {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
@@ -304,24 +316,24 @@ def update_bar(all_rows_data, value):
                      html.Div([
                             html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'green'}),
                             html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box"),
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em green'}),
                          html.Div([
                             html.H4(clientest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'blue'}),
                             html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box"),
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em blue'}),
                         
                         html.Div([
                             html.H4('$'+ f"{facturadot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'purple'}),
                             html.Label('Facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="three columns number-stat-box"),
+                        ], className="three columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em purple'}),
                         html.Div([
                             html.H4('$'+ f"{saldot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'red'}),
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="three columns number-stat-box"),
+                        ], className="three columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em red'}),
                          html.Div([
                             html.H4(nfacturas, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#A21A24'}),
                             html.Label('Facturas', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box"),                 
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #A21A24'}),                 
                 ], className="twelve columns",
                 style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'}),
             ]
@@ -528,8 +540,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             dst = e[1]
                             w = e[2]
    
-                            got_net.add_node(src, src, title=src, color='#87C1FF')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
+                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='square')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
                             got_net.add_edge(src, dst, value=w)
        
         else:
@@ -554,8 +566,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             w = e[2]
                     
 
-                            got_net.add_node(src, src, title=src, color='#87C1FF')
-                            got_net.add_node(dst, dst, title=dst, size=w, color='lightgreen')           
+                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='square')
+                            got_net.add_node(dst, dst, title=dst, size=w, color='lightgreen', shape='triangle')           
                             got_net.add_edge(src, dst, value=w)
         
      
@@ -728,7 +740,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
                        text_auto=True,
                        hover_data=['Facturas'])
         fig5.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig5.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
+        fig5.update_layout(title_x=0.5)
        
         #Top 10 mayores proveedores----------------------------------------------------
         fig6 = px.scatter(new_df2, x="Fecha factura", y=" Total ",                       
@@ -736,7 +748,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
                           color='Facturas',
                           size='Facturas')
         fig6.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig6.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5)
+        fig6.update_layout(title_x=0.5)
         
         new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
         data= new_df.to_dict('records')
@@ -756,7 +768,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
         fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
         fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
         fig8.update_xaxes(title='Fecha factura')
-        fig8.update_layout(margin = dict(t=30, l=30, r=30, b=30), title_x=0.5) 
+        fig8.update_layout(title_x=0.5) 
 
         return fig5, fig6, data, columns, fig8
     else:
@@ -801,8 +813,8 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, color=' #87C1FF')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
+                            got_net.add_node(src, src, title=src, color=' #87C1FF', shape='square')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
                             got_net.add_edge(src, dst, value=w)
 
             
@@ -826,17 +838,15 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, size=w, color='#87C1FF')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen')
-                            got_net.add_edge(src, dst, value=w)
-       
-        
-        
+                            got_net.add_node(src, src, title=src, size=w, color='#87C1FF', shape='square')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
+                            got_net.add_edge(src, dst, value=w)  
+
         data = {'nodes': got_net.nodes,
                 'edges': [{'id': str(edge['from']) + " __ " + str(edge['to']),
                            'from': edge['from'],
                            'to': edge['to'],
-                           'arrows':'to'              
+                           'arrows':'to'
                            }
                           for edge in got_net.edges]
                 }
@@ -946,7 +956,7 @@ def toggle_modal(n1, n2, is_open):
     return is_open
 
 
-
+# ##########   AYUDA PRINCIPAL ################################
 callback(
     Output("modal-body-scroll", "is_open"),
     [
@@ -955,6 +965,17 @@ callback(
     ],
     [State("modal-body-scroll", "is_open")],
 )(toggle_modal)    
+
+
+# ##########   AYUDA TABLA ################################
+callback(
+    Output("modal-tabla", "is_open"),
+    [
+        Input("open-tabla", "n_clicks"),
+        Input("close-tabla", "n_clicks"),
+    ],
+    [State("modal-tabla", "is_open")],
+)(toggle_modal)   
 
 # ##########   TOAST ################################
 @callback(

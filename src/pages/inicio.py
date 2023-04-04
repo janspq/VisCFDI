@@ -4,6 +4,48 @@ from dash import html, dcc, html, dash_table
 import dash_loading_spinners as dls
 
 
+ayuda = html.Div(
+    [
+        dbc.Button("?", id="open-tabla", n_clicks=0, outline=True, size="lg",className="me-1"),
+       
+        dbc.Modal(
+            [
+                dbc.ModalHeader(dbc.ModalTitle("Filtros de la tabla")),
+                dbc.ModalBody([html.P('Una nota rápida sobre el filtrado. Hemos definido nuestra propia sintaxis para realizar operaciones de filtrado:'),
+                               html.P('Los filtros se realizan con operadores = < > >='), 
+                               html.P('Escriba en la casilla en blanco y presione ENTER para ejecutar un filtrado'),
+                               html.P('Pueden concurrir varios filtros a la vez'),
+                               html.Br(), 
+                               html.P('La filas pueden ser eliminadas solo de la representación visual, no afecta los datos si se ejecuta nuevamente otro filtro principal en la aplicación '), 
+                               html.Br(),                               
+                               html.P('Ejemplo, filtrar valores iguales a 4536.17 en la columna Total Facturado:'),  
+                               html.P(' escriba =4536.17 en la casilla bajo el nombre de columna  y presione ENTER '),
+                               html.Br(), 
+                               html.P('Para eliminar filtros deje en blanco en la casilla bajo el nombre de columna  y presione ENTER '),
+                               
+                                               
+                              ]
+
+                              ),
+                              
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close",
+                        id="close-tabla",
+                        size="xl",
+                        n_clicks=0,
+                    )
+                ),
+            ],
+            id="modal-tabla",
+            scrollable=True,
+            is_open=False,
+            size="xl",
+            class_name="modal-style"
+        ),
+    ]
+)
+
 # Define the page layout
 layout = dls.Fade([  
     dbc.Row(
@@ -18,8 +60,29 @@ layout = dls.Fade([
     html.Br(),
     
     dbc.Row([
+       
        html.Div([ 
-        html.Label("Tabla interactiva asociada al resumen general", style={'textAlign': 'Left','fontWeight': 'bold'}),         
+        dbc.Row([
+           dbc.Col([
+                html.Label("Tabla interactiva asociada al resumen general", style={'textAlign': 'Left','fontWeight': 'bold'}),
+            ], xs=5, md=9),
+           dbc.Col([
+                    dcc.Dropdown(
+                            id='dropdown_facturas',
+                            options={
+                                     'Facturas vigentes': 'Facturas vigentes',
+                                     'Facturas canceladas': 'Facturas canceladas',
+                                     'Vigentes + Canceladas': 'Vigentes + Canceladas',
+                                    }, 
+                            value = 'Facturas vigentes',  
+                            clearable=False,                                                               
+                            className="dropdown"                                             
+                        )
+            ], xs=5, md=2),
+            dbc.Col([
+                ayuda
+            ], xs=2, md=1),
+        ]),                 
         dash_table.DataTable(
         id='datatable-interactivity',        
         editable=True,              # allow editing of data inside all cells

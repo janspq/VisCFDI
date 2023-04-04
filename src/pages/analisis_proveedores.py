@@ -16,12 +16,12 @@ layout = dls.Fade([
         
         dbc.Col([
            
-            dcc.Graph(id='line-fig5', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
+            dcc.Graph(id='line-fig5', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
         ], xs=12, md=6),
 
         dbc.Col([
           
-            dcc.Graph(id='line-fig6', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
+            dcc.Graph(id='line-fig6', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
         ], xs=12, md=6),
 
     ]),
@@ -74,7 +74,7 @@ layout = dls.Fade([
        ], xs=12, md=6),
 
         dbc.Col([
-            dcc.Graph(id='line-fig8', figure={}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })
+            dcc.Graph(id='line-fig8', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })
         ], xs=12, md=6)
     ])
 ],
