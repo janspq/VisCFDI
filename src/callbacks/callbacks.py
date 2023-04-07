@@ -200,10 +200,10 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
             return lst, children
         else:
             children = [
-                dbc.Toast(
-                [html.P("El archivo no es válido", className="mb-0")],
+                dbc.Toast(                
+                [html.P('Los datos permitidos son en .CSV, las columnas utilizadas son ["Proveedores", "Clientes", "Fecha factura", "Metodo de pago", "Moneda", "Tipo de cambio", " Total ", "Estatus", " Saldo insoluto ", "Estatus pago", "Deducible"].')],
                 id="toast2",
-                header="Error",                
+                header="¡Error! El archivo no es válido",                
                 dismissable=True,
                 icon="danger",
                 is_open=True,

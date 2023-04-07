@@ -135,8 +135,10 @@ def display_page(pathname,contents, filename, value):
     if value:
         df = parse_data(contents, filename) 
         if df.empty == False:
-           if pathname == '/inicio':
+           if pathname == '/':
                return inicio.layout 
+           if pathname == '/inicio':
+               return inicio.layout            
            if pathname == '/analisis_clientes':
                 return analisis_clientes.layout
            if pathname == '/red_clientes':
@@ -146,7 +148,7 @@ def display_page(pathname,contents, filename, value):
            if pathname == '/red_proveedores':
                return red_proveedores.layout
            else: # if redirected to unknown link
-               return inicio.layout
+               return "¡Error 404! Por favor elige un enlace"
         else:
             return no_data.layout
     else:
