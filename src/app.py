@@ -16,7 +16,7 @@ from callbacks import callbacks
 from callbacks.callbacks import parse_data
 
 # Connect the navbar to the index
-from components import components
+from components.components import navbar
 
 # Keep this out of source code repository - save in a file or a database
 VALID_USERNAME_PASSWORD_PAIRS = {
@@ -24,8 +24,6 @@ VALID_USERNAME_PASSWORD_PAIRS = {
 }
 
 load_figure_template("bootstrap")
-
-nav = components.Navbar()
 
 app = dash.Dash(__name__, 
                 title = 'VisCFDI',
@@ -44,7 +42,7 @@ app.layout = dbc.Container([
         [
             dbc.Col(
                 [
-                    nav
+                    navbar
                 ], xs=12)  
         ]
     ),
@@ -77,9 +75,9 @@ app.layout = dbc.Container([
                         },
             ),
             html.Div(id="alerta-inicio", style ={'textAlign': 'center'}),
-            ], className="four columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'}),
+            ], className="four columns", style ={'textAlign': 'center', "background-color": '#DBDBDB'}),
             html.Div([
-            html.Label('Rango de fechas (Día-Mes-Año):', style = {"margin-left":'5rem'}),
+            html.Label('Rango de fechas (Día-Mes-Año):', style = {"margin-left":'5rem', 'fontWeight': 'bold',}),
             dcc.DatePickerRange(
                 id="picker-range",
                 start_date_placeholder_text='Fecha inicio',
@@ -91,9 +89,9 @@ app.layout = dbc.Container([
                 style = {'font-size': '12px','border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate', "margin-left":'5rem'},
                 className='date_picker_style'
             ),
-            ], className="four columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'}),
+            ], className="four columns", style={'textAlign': 'center', "background-color": '#DBDBDB'}),
             html.Div([
-            html.Label('Empresa a analizar:'),
+            html.Label('Empresa a analizar:', style={'fontWeight': 'bold'}),
             dcc.Dropdown(
                 id='dropdown_empresa_base',
                 clearable=False, 
@@ -101,16 +99,16 @@ app.layout = dbc.Container([
                                                                            
             ),
             html.Div(id="alerta-dropdown", style ={'textAlign': 'center'}),
-            ], className="three columns", style ={'textAlign': 'center', "background-color": '#f2f2f2'})
+            ], className="three columns", style ={'textAlign': 'center', "background-color": '#DBDBDB'})
 
         ], className="twelve columns",
-        style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem', 'boxShadow': '0.1em 0.1em 0.3em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'} ),
+        style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 2px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'} ),
 
         ######################################### 
         # Number statistics & number of accidents each day
 
         html.Div(id='page-content', className="twelve columns",
-                style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem', 'boxShadow': '0.1em 0.1em 0.3em rgba(0,0,0,0.1)', 'border-radius': '10px', 'marginTop': '1rem'}
+                style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 2px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'}
                 ),
 
     ], style={'display': 'flex', 'flex-wrap': 'wrap'}),

@@ -13,9 +13,9 @@ layout = dls.Fade([
     dbc.Row([ 
         dbc.Col([ 
             html.Br(), 
-            html.Label('Provedores', style={'textAlign': 'center', 'color':'#87C1FF'}), 
+            html.Label('Provedores', style={'textAlign': 'center', 'color':'#3d97e9'}), 
             html.Label('--->', style={'textAlign': 'center'}),
-            html.Label('Clientes', style={'textAlign': 'center', 'color':'lightgreen'}),     
+            html.Label('Clientes', style={'textAlign': 'center', 'color':'#48bf53'}),     
             html.Div(id = 'select-node-proveedores') 
         ], xs=12, md=2), #parrafo de select nodes         
         dbc.Col([

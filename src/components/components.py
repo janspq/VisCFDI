@@ -7,8 +7,8 @@ import dash_bootstrap_components as dbc
 
 
 
-def Modal():
-    layout = html.Div(
+
+modal = html.Div(
     [
         dbc.Button("?", id="open-body-scroll", n_clicks=0, outline=True, color="info", size="sm"),
         
@@ -74,14 +74,11 @@ def Modal():
             class_name="modal-style"
         ),
     ])
-    return layout
 
-modal = Modal()
 
 
 # Define the navbar structure
-def Navbar():
-    layout = html.Div([
+navbar= layout = html.Div([
         dbc.NavbarSimple(
             children=[               
                 dbc.NavItem(dbc.NavLink("Inicio", href="/inicio", active='exact')),
@@ -113,4 +110,3 @@ def Navbar():
         ), 
     ])
 
-    return layout

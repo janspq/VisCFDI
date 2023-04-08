@@ -6,7 +6,7 @@ import dash_loading_spinners as dls
 
 ayuda = html.Div(
     [
-        dbc.Button("?", id="open-tabla", n_clicks=0, outline=True, size="lg",className="me-1"),
+        dbc.Button("?", id="open-tabla", n_clicks=0, outline=True, size="lg"),
        
         dbc.Modal(
             [

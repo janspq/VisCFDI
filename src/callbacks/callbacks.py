@@ -1,23 +1,14 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import html, Input, Output, callback, State
-
 import base64
 import io
 import datetime as datetime
 import plotly.express as px
 import plotly.graph_objects as go
- 
 from pyvis.network import Network
 import pandas as pd
-import numpy as np
 
-
-# Connect the navbar to the index
-from components import components
-
-# Define the navbar
-modal = components.Modal()
 
 # Función para pasar a float el ' Total ' y ' Saldo insoluto ' según su estructura.
 def to_float_from_str_decimal(string):
@@ -172,7 +163,7 @@ def update_datepickerrange(contents, filename):
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date')],
-    prevent_initial_call=True
+   
 )
 def update_dropdown_empresa_base(contents, filename, start_date, end_date):
     if contents:
@@ -194,7 +185,7 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
                 duration=1000,
                 icon="success",
                 is_open=True,
-                style={"position": "fixed", "top": 250, "left": 300, "width": 200},
+                style={"position": "fixed", "top": 250, "left": 250, "width": 200},
             ),
             ]
             return lst, children
@@ -215,13 +206,13 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
     else:
         children = [
                 dbc.Toast(
-                id="toast3",
-                header="En este panel principal cargue un archivo por favor!!!",
-                icon="info",
-                dismissable=True,
-                is_open=True,
-                style={"position": "fixed", "top": 250, "left": 500, "width": 400},
-            ),
+                     id="toast3",
+                     header="En este panel cargue un archivo por favor!",
+                     icon="info",
+                     dismissable=True,
+                     is_open=True,
+                     style={"position": "fixed", "top": 250, "left": 450, "width": 400}
+                    ),
             ]
         lst=[]
         return lst, children
@@ -297,6 +288,7 @@ def update_bar(all_rows_data, value):
     if all_rows_data:
         dff = pd.DataFrame(all_rows_data)
         dff=dff.assign(Facturas=1)
+
         if value=='Seleccionar todo':
             proveedorest = len(pd.unique(dff['Proveedores']))
             clientest = len(pd.unique(dff['Clientes']))
@@ -314,9 +306,9 @@ def update_bar(all_rows_data, value):
             children =[
                 html.Div([
                      html.Div([
-                            html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'green'}),
+                            html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004d25'}),
                             html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em green'}),
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
                          html.Div([
                             html.H4(clientest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'blue'}),
                             html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
@@ -335,7 +327,7 @@ def update_bar(all_rows_data, value):
                             html.Label('Facturas', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
                         ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #A21A24'}),                 
                 ], className="twelve columns",
-                style={"background-color": '#f2f2f2','padding':'2rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'}),
+                style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'}),
             ]
             
 
@@ -365,23 +357,23 @@ def update_bar(all_rows_data, value):
            
             children =[
                 html.Div([
-                    dbc.Row([html.H5("INGRESOS", className='text-center',style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'})]),
+                    dbc.Row([html.H5("INGRESOS", className='text-center',style={'color': '#004d25','textAlign': 'center','fontWeight': 'bold'})]),
                     dbc.Row([                        
                         html.Div([
-                            html.H5(n_clientes, className='text-center', style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'}),
+                            html.H5(n_clientes, className='text-center', style={'color': '#004d25','textAlign': 'center','fontWeight': 'bold'}),
                             html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #06c258'}),
                         html.Div([
-                            html.H5('$'+ f"{facturadoc:,}",className='text-center', style={'color': '#06c258','textAlign': 'center','fontWeight': 'bold'}),
+                            html.H5('$'+ f"{facturadoc:,}",className='text-center', style={'color': '#004d25','textAlign': 'center','fontWeight': 'bold'}),
                             html.Label('Total facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #06c258'}),
                         html.Div([
-                            html.H5('$'+ f"{por_cobrar:,}", className='text-center', style={'color': '#06c258', 'textAlign': 'center','fontWeight': 'bold'}),
+                            html.H5('$'+ f"{por_cobrar:,}", className='text-center', style={'color': '#004d25', 'textAlign': 'center','fontWeight': 'bold'}),
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'})
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #06c258'})
                     ]),
                 ], className="six columns",
-                style={"background-color": '#f2f2f2','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+                style={"background-color": '#DBDBDB','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
        
                 html.Div([
                     dbc.Row([html.H5("EGRESOS", className='text-center',style={'color': '#004999','textAlign': 'center','fontWeight': 'bold'})]),
@@ -389,18 +381,18 @@ def update_bar(all_rows_data, value):
                         html.Div([
                            html.H5(n_proveedores, style={'textAlign': 'center','fontWeight': 'bold','color': '#004999'}),
                            html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #004999'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #004999'}),
                         html.Div([
                             html.H5('$'+ f"{facturadop:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004999'}),
                             html.Label('Total facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #004999'}),
+                        ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #004999'}),
                         html.Div([
                             html.H5('$'+ f"{por_pagar:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004999'}),
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="four columns number-stat-box",style={'boxShadow': '0.1em 0.1em 0.3em #004999'})
+                        ], className="four columns number-stat-box",style={'boxShadow': '0.1em 0.1em 0.5em #004999'})
                     ]),
                 ], className="six columns",
-                style={"background-color": '#f2f2f2','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+                style={"background-color": '#DBDBDB','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
             ]
 
         return children
@@ -981,32 +973,38 @@ callback(
 @callback(
     Output("info-toast2", "children"),
     [Input("dropdown_empresa_base", "value"),
-    Input('picker-range', 'start_date'),
-    Input('picker-range', 'end_date')]
+    Input('upload-data', 'contents'),
+    Input('upload-data', 'filename')]
 )
-def open_toast(value, start_date, end_date):
-    if value:
-        return [
-            dbc.Toast(
-                id="toast4",
-                header="Realizado con éxito",
-                icon="success",
-                duration=1000,
-                dismissable=True,
-                is_open=True,
-                style={"position": "fixed", "top": 230, "right": 350, "width": 200},
-            ),
-        ]
-    else:
-        if end_date:
-             return [
-                 dbc.Toast(
+def open_toast(value,contents, filename):
+    if contents:
+        df = parse_data(contents, filename) 
+        if df.empty == False:
+            if value:
+                return [
+                    dbc.Toast(
+                    id="toast4",
+                    header="¡Empresa seleccionada!",
+                    icon="success",
+                    duration=1000,
+                    dismissable=True,
+                    is_open=True,
+                   style={"position": "fixed", "top": 230, "right": 350, "width": 200}),
+                ]
+            
+            else:                          
+                return [
+                   dbc.Toast(
                      id="toast5",
                      header="En el panel principal seleccionar empresa a analizar!!!",
                      icon="info",
                      dismissable=True,
                      is_open=True,
-                     style={"position": "fixed", "top": 250, "left": 500, "width": 400}
+                     style={"position": "fixed", "top": 250, "left": 550, "width": 400}
                     ),
                 ]
+        
+        
+    
 
+        
