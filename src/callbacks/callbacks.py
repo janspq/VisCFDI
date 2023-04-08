@@ -61,13 +61,13 @@ def mensaje_inicio(contents, filename):
     if contents:
         df = parse_data(contents, filename) 
         if df.empty == False:
-           return  html.Label('Cargado: '+ filename, style={'textAlign': 'center'})
+           return  html.Label('Cargado: '+ filename, style={'textAlign': 'center','font-style': 'italic'})
                            
         else:
             return [
                 dbc.Alert(
                         [
-                            html.Label('Cargado: '+ filename, style={'textAlign': 'center'})                                                
+                            html.Label('Cargado: '+ filename, style={'textAlign': 'center', 'font-style': 'italic'})                                                
                         ],
                         color = 'danger'      
                         )
@@ -372,8 +372,7 @@ def update_bar(all_rows_data, value):
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
                         ], className="four columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #06c258'})
                     ]),
-                ], className="six columns",
-                style={"background-color": '#DBDBDB','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+                ], className='six columns', style={"background-color": '#DBDBDB'}),
        
                 html.Div([
                     dbc.Row([html.H5("EGRESOS", className='text-center',style={'color': '#004999','textAlign': 'center','fontWeight': 'bold'})]),
@@ -391,8 +390,7 @@ def update_bar(all_rows_data, value):
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
                         ], className="four columns number-stat-box",style={'boxShadow': '0.1em 0.1em 0.5em #004999'})
                     ]),
-                ], className="six columns",
-                style={"background-color": '#DBDBDB','padding':'0.5rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'} ),
+                ], className='six columns', style={"background-color": '#DBDBDB'}),
             ]
 
         return children
@@ -532,8 +530,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             dst = e[1]
                             w = e[2]
    
-                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='square')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
+                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='image', image='https://cdn-icons-png.flaticon.com/512/301/301681.png?w=740&t=st=1680932672~exp=1680933272~hmac=680cc695c234193dad63e907ed80f34866570f045075d316fea2e6dc66bd65d0')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='image', image='https://cdn-icons-png.flaticon.com/512/846/846398.png?w=740&t=st=1680932405~exp=1680933005~hmac=9cfa44c12263fb9af3730c0ed5168a36e0c38560a4b055faad07d9dee5cb9349')
                             got_net.add_edge(src, dst, value=w)
        
         else:
@@ -558,8 +556,8 @@ def create_net_clientes(contents, filename, start_date, end_date, value):
                             w = e[2]
                     
 
-                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='square')
-                            got_net.add_node(dst, dst, title=dst, size=w, color='lightgreen', shape='triangle')           
+                            got_net.add_node(src, src, title=src, color='#87C1FF', shape='image', image='https://cdn-icons-png.flaticon.com/512/301/301681.png?w=740&t=st=1680932672~exp=1680933272~hmac=680cc695c234193dad63e907ed80f34866570f045075d316fea2e6dc66bd65d0')
+                            got_net.add_node(dst, dst, title=dst, size=w, color='lightgreen', shape='image', image='https://cdn-icons-png.flaticon.com/512/846/846398.png?w=740&t=st=1680932405~exp=1680933005~hmac=9cfa44c12263fb9af3730c0ed5168a36e0c38560a4b055faad07d9dee5cb9349')           
                             got_net.add_edge(src, dst, value=w)
         
      
@@ -805,8 +803,8 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, color=' #87C1FF', shape='square')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
+                            got_net.add_node(src, src, title=src, color=' #87C1FF', shape='image', image='https://cdn-icons-png.flaticon.com/512/301/301681.png?w=740&t=st=1680932672~exp=1680933272~hmac=680cc695c234193dad63e907ed80f34866570f045075d316fea2e6dc66bd65d0')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen',shape='image', image='https://cdn-icons-png.flaticon.com/512/846/846398.png?w=740&t=st=1680932405~exp=1680933005~hmac=9cfa44c12263fb9af3730c0ed5168a36e0c38560a4b055faad07d9dee5cb9349')
                             got_net.add_edge(src, dst, value=w)
 
             
@@ -830,8 +828,8 @@ def create_net_proveedores(contents, filename, start_date, end_date, value):
                             w = e[2]
           
 
-                            got_net.add_node(src, src, title=src, size=w, color='#87C1FF', shape='square')
-                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='triangle')
+                            got_net.add_node(src, src, title=src, size=w, color='#87C1FF', shape='image', image='https://cdn-icons-png.flaticon.com/512/301/301681.png?w=740&t=st=1680932672~exp=1680933272~hmac=680cc695c234193dad63e907ed80f34866570f045075d316fea2e6dc66bd65d0')
+                            got_net.add_node(dst, dst, title=dst, color='lightgreen', shape='image', image='https://cdn-icons-png.flaticon.com/512/846/846398.png?w=740&t=st=1680932405~exp=1680933005~hmac=9cfa44c12263fb9af3730c0ed5168a36e0c38560a4b055faad07d9dee5cb9349')
                             got_net.add_edge(src, dst, value=w)  
 
         data = {'nodes': got_net.nodes,

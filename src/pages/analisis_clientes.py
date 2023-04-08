@@ -18,14 +18,16 @@ layout = dls.Fade([
         
         dbc.Col([
            
-            dcc.Graph(id='line-fig1', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })            
+            dcc.Graph(id='line-fig1', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box')            
         ], xs=12, md=6),
+        
         dbc.Col([
           
-            dcc.Graph(id='line-fig2', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })
+            dcc.Graph(id='line-fig2', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box')
             
         ], xs=12, md=6)
     ]),
+    html.Br(),
 
    dbc.Row([
 
@@ -70,11 +72,11 @@ layout = dls.Fade([
                 'fontWeight': 'bold'
             }                      
         ), 
-        ], className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })       
+        ], className='twelve columns number-stat-box')       
        ], xs=12, md=6),
 
         dbc.Col([
-            dcc.Graph(id='line-fig4', figure={}, config={"locale": 'es'}, className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })
+            dcc.Graph(id='line-fig4', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box')
 
         ], xs=12, md=6)
     ])

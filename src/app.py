@@ -1,17 +1,11 @@
 import dash
-from dash import html, dcc, html, Input, Output, State
+from dash import html, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
-import pandas as pd
-import numpy as np
 import dash_auth
 import datetime as datetime
-from datetime import datetime as dt
-import plotly.express as px
 from dash_bootstrap_templates import load_figure_template
 from pages import  inicio, analisis_clientes, analisis_proveedores, red_clientes, red_proveedores, no_data
 
-#callbacks
-from callbacks import callbacks
 #callbacks
 from callbacks.callbacks import parse_data
 
@@ -66,6 +60,7 @@ app.layout = dbc.Container([
                         style={                 
                             'width': '100%',
                             'height': '60px',
+                            'border-color':'#555555',
                             'lineHeight': '50px',
                             'borderWidth': '3px',
                             'borderStyle': 'dashed',
@@ -102,13 +97,13 @@ app.layout = dbc.Container([
             ], className="three columns", style ={'textAlign': 'center', "background-color": '#DBDBDB'})
 
         ], className="twelve columns",
-        style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 2px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'} ),
+        style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 1px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'} ),
 
         ######################################### 
         # Number statistics & number of accidents each day
 
         html.Div(id='page-content', className="twelve columns",
-                style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 2px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'}
+                style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 1px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'}
                 ),
 
     ], style={'display': 'flex', 'flex-wrap': 'wrap'}),
