@@ -10,7 +10,7 @@ import dash_bootstrap_components as dbc
 
 modal = html.Div(
     [
-        dbc.Button("?", id="open-body-scroll", n_clicks=0, outline=True, color="info", size="sm"),
+        dbc.Button("ayuda", id="open-body-scroll", n_clicks=0, outline=True, color="info", size="sm"),
         
        
         dbc.Modal(
