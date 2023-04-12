@@ -30,7 +30,7 @@ layout = dls.Fade([
                                                                           'springConstant': 0.01, 'springLength': 100}},
                                             )
                 )
-            ], className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '#e3e3e3 4px 4px 2px', 'border-radius': '10px', 'backgroundColor': 'white' })    
+            ], className="twelve columns", style={'padding':'.3rem', 'marginTop':'1rem', 'marginLeft':'1rem', 'boxShadow': '0.1em 0.1em 0.5em #9FA6B2', 'border-radius': '10px', 'backgroundColor': 'white' })    
             ], xs=12, md=10),             
     ])
 ], 

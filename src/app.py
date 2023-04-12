@@ -66,7 +66,8 @@ app.layout = dbc.Container([
                             'borderStyle': 'dashed',
                             'borderRadius': '5px',
                             'textAlign': 'center', 
-                            'background-color': 'white'                          
+                            'background-color': 'white',
+                            'boxShadow': '0.1em 0.1em 0.3em #9FA6B2'                          
                         },
             ),
             html.Div(id="alerta-inicio", style ={'textAlign': 'center'}),
@@ -81,7 +82,7 @@ app.layout = dbc.Container([
                 month_format='DD/MM/YYYY',
                 show_outside_days=True,
                 minimum_nights=0,  
-                style = {'font-size': '12px','border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate', "margin-left":'5rem'},
+                style = {'boxShadow': '0.1em 0.1em 0.3em #9FA6B2','font-size': '12px','border-radius' : '2px', 'border' : '1px solid #ccc', 'color': '#333', 'border-spacing' : '0', 'border-collapse' :'separate', "margin-left":'5rem'},
                 className='date_picker_style'
             ),
             ], className="four columns", style={'textAlign': 'center', "background-color": '#DBDBDB'}),
@@ -91,6 +92,7 @@ app.layout = dbc.Container([
                 id='dropdown_empresa_base',
                 clearable=False, 
                 placeholder='Seleccionar empresa',
+                style={'boxShadow': '0.1em 0.1em 0.3em #9FA6B2'}
                                                                            
             ),
             html.Div(id="alerta-dropdown", style ={'textAlign': 'center'}),

@@ -6,7 +6,7 @@ import dash_loading_spinners as dls
 
 ayuda = html.Div(
     [
-        dbc.Button("ayuda", id="open-tabla", n_clicks=0, outline=True, size="lg"),
+        dbc.Button("?", id="open-tabla", n_clicks=0, outline=True, color="#DBDBDB", size="lg"),
        
         dbc.Modal(
             [
@@ -126,7 +126,7 @@ layout = dls.Fade([
             }
         ),  
 
-        ], className="twelve columns number-stat-box")
+        ], className="twelve columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})
 
     ]),
 
