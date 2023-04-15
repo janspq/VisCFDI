@@ -46,7 +46,7 @@ app.layout = dbc.Container([
     
     html.Div([
         ################### Filter box ###################### 
-        html.Div([
+        html.Div([            
             html.Div([
             dcc.Upload(
                         id='upload-data',
@@ -108,7 +108,7 @@ app.layout = dbc.Container([
                 style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem', 'boxShadow': '0 0  0 1px rgb(255,255,255)', 'border-radius': '10px', 'marginTop': '1rem'}
                 ),
 
-    ], style={'display': 'flex', 'flex-wrap': 'wrap'}),
+    ]),
     
     html.Div(id='info-toast'),
     html.Div(id='info-toast2'),    

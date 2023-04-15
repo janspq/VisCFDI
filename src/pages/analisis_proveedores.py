@@ -17,18 +17,22 @@ layout = dls.Fade([
         dbc.Col([
            
             dcc.Graph(id='line-fig5', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})            
-        ], xs=12, md=6),
+        ], xs=12, md=4),
 
         dbc.Col([
           
             dcc.Graph(id='line-fig6', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})            
-        ], xs=12, md=6),
+        ], xs=12, md=8),
 
     ]),
 
     html.Br(), 
 
     dbc.Row([
+        dbc.Col([
+            dcc.Graph(id='line-fig8', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})
+        ], xs=12, md=8),
+        
         dbc.Col([
          html.Div([
             dbc.Label('Distribución de facturación por proveedores y recurrencia', style={"font-weight": "bold"}),
@@ -71,11 +75,9 @@ layout = dls.Fade([
             }                      
         ), 
         ], className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})       
-       ], xs=12, md=6),
+       ], xs=12, md=4),
 
-        dbc.Col([
-            dcc.Graph(id='line-fig8', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})
-        ], xs=12, md=6)
+        
     ])
 ],
 color="#3B71CA",
