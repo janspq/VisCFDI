@@ -101,12 +101,7 @@ layout = dls.Fade([
         style_cell={                # ensure adequate header width when text is shorter than cell's text
             'minWidth': 95, 'maxWidth': 95, 'width': 95
         },
-        style_cell_conditional=[    # align text columns to left. By default they are aligned to right
-            {
-                'if': {'column_id': c},
-                'textAlign': 'left'
-            } for c in ['country', 'iso_alpha3']
-        ],
+        
         style_data={                # overflow cells' content into multiple lines
             'whiteSpace': 'normal',
             'height': 'auto',

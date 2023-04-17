@@ -313,7 +313,7 @@ def create_table(contents, filename, start_date, end_date, value, valuev):
             columns = [
             {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
             if i == "Proveedores"or i == "Clientes" or i == " Total " or i == " Saldo insoluto "
-            else {"name": i, "id": i, "deletable": True, "selectable": False}
+            else {"name": i, "id": i, "deletable": False, "selectable": False}
             for i in dftabla.columns
             ] 
             return data, columns         
@@ -331,7 +331,7 @@ def create_table(contents, filename, start_date, end_date, value, valuev):
             columns = [
             {"name": i, "id": i, "deletable": False, "selectable":False, "hideable": False}
             if i == "Proveedores"or i == "Clientes" or i == " Total " or i == " Saldo insoluto "
-            else {"name": i, "id": i, "deletable": True, "selectable": False}
+            else {"name": i, "id": i, "deletable": False, "selectable": False}
             for i in dftabla.columns
             ] 
             return data, columns 
@@ -534,6 +534,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
 
             # Tabla de clientes
             new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            new_df=new_df.round(decimals = 2)
             data= new_df.to_dict('records')  
            
             columns=[
@@ -580,6 +581,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
 
             # Tabla de clientes
             df3 = df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            df3=df3.round(decimals = 2)
             data= df3.to_dict('records')  
            
             columns=[
@@ -817,7 +819,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
 
             #Agrupar los proveedores para la tabla
             new_df = (dff_proveedores.groupby(["Proveedores"])[[" Total ", " Saldo insoluto ",'Facturas']].sum()).reset_index()
-            new_df = round(new_df, 2)
+            
            
             #Elegir los 10 mayores por total para graficar
             dff_proveedores_max_10 = new_df.nlargest(10, [' Total '])
@@ -858,6 +860,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
             fig6.update_layout(title_x=0.5)
         
             new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            new_df=new_df.round(decimals = 2)
             data= new_df.to_dict('records')
            
             columns=[
@@ -899,6 +902,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
             fig6.update_layout(title_x=0.5)
         
             df4 = df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            df4=df4.round(decimals = 2)
             data= df4.to_dict('records')
            
             columns=[
