@@ -217,6 +217,71 @@ def update_dropdown_empresa_base(contents, filename, start_date, end_date):
         lst=[]
         return lst, children
 
+##### Devolución de llamada del dropdown d-clientes #######
+@callback(
+    Output('d-clientes', 'options'),
+    [Input('upload-data', 'contents'),
+    Input('upload-data', 'filename'),
+    Input('picker-range', 'start_date'),
+    Input('picker-range', 'end_date'),
+    Input('dropdown_empresa_base', 'value')],   
+)
+def dropdown_clientes(contents, filename, start_date, end_date, value):
+    if value:
+        df = parse_data(contents, filename)
+
+        df = df.loc[df['Estatus']=='Vigente']         
+     
+        mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
+        dff = df.loc[mask] 
+
+        if value =='Seleccionar todo':
+            result = dff['Clientes']            
+            cliente_a_analizar = result.unique()
+             
+            lst =[{'label': 'Todos los clientes', 'value': 'Todos los clientes'}] +  [{'label': i, 'value': i} for i in cliente_a_analizar]
+            return lst
+        else:
+            dff = dff.loc[dff['Proveedores']==value] 
+            result = dff['Clientes']            
+            cliente_a_analizar = result.unique()
+             
+            lst =[{'label': 'Todos los clientes', 'value': 'Todos los clientes'}] +  [{'label': i, 'value': i} for i in cliente_a_analizar]
+            return lst   
+ 
+##### Devolución de llamada del dropdown d-proveedores #######
+@callback(
+    Output('d-proveedores', 'options'),
+    [Input('upload-data', 'contents'),
+    Input('upload-data', 'filename'),
+    Input('picker-range', 'start_date'),
+    Input('picker-range', 'end_date'),
+    Input('dropdown_empresa_base', 'value')],   
+)
+def dropdown_proveedores(contents, filename, start_date, end_date, value):
+    if value:
+        df = parse_data(contents, filename)
+
+        df = df.loc[df['Estatus']=='Vigente']         
+     
+        mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
+        dff = df.loc[mask] 
+
+        if value =='Seleccionar todo':
+            result = dff['Proveedores']            
+            proveedor_a_analizar = result.unique()
+             
+            lst =[{'label': 'Todos los proveedores', 'value': 'Todos los proveedores'}] +  [{'label': i, 'value': i} for i in proveedor_a_analizar]
+            return lst
+        else:
+            dff = dff.loc[dff['Clientes']==value] 
+            result = dff['Proveedores']            
+            proveedor_a_analizar = result.unique()
+             
+            lst =[{'label': 'Todos los proveedores', 'value': 'Todos los proveedores'}] +  [{'label': i, 'value': i} for i in proveedor_a_analizar]
+            return lst  
+
+
 
 ############## Impresión de la tabla  #########
 @callback(
@@ -306,25 +371,25 @@ def update_bar(all_rows_data, value):
             children =[
                 html.Div([
                      html.Div([
-                            html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#004d25'}),
                             html.Label('Proveedores', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #06c258'}),
+                            html.H4(proveedorest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'rgb(0 58 115)'})                            
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em rgb(0 58 115)'}),
                          html.Div([
-                            html.H4(clientest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'blue'}),
                             html.Label('Clientes', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em blue'}),
+                            html.H4(clientest, style={'textAlign': 'center','fontWeight': 'bold', 'color': 'rgb(0 114 178)'})                            
+                        ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em rgb(0 114 178)'}),
                         
                         html.Div([
-                            html.H4('$'+ f"{facturadot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'purple'}),
                             html.Label('Facturado', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                            html.H4('$'+ f"{facturadot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'purple'})                            
                         ], className="three columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em purple'}),
                         html.Div([
-                            html.H4('$'+ f"{saldot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'red'}),
                             html.Label('Saldo insoluto', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
-                        ], className="three columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em red'}),
+                            html.H4('$'+ f"{saldot:,}", style={'textAlign': 'center','fontWeight': 'bold', 'color': 'rgb(213 94 0)'})                            
+                        ], className="three columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em rgb(213 94 0)'}),
                          html.Div([
-                            html.H4(nfacturas, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#A21A24'}),
                             html.Label('Facturas', style={'fontWeight': 'bold','textAlign': 'center','paddingTop': '.3rem'}),
+                            html.H4(nfacturas, style={'textAlign': 'center','fontWeight': 'bold', 'color': '#A21A24'})                            
                         ], className="two columns number-stat-box", style={'boxShadow': '0.1em 0.1em 0.3em #A21A24'}),                 
                 ], className="twelve columns",
                 style={"background-color": '#DBDBDB','padding':'2rem', 'margin':'1rem','border-radius': '10px', 'marginTop': '1rem'}),
@@ -408,10 +473,11 @@ def update_bar(all_rows_data, value):
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date'),
-    Input('dropdown_empresa_base', 'value')]
+    Input('dropdown_empresa_base', 'value'),
+    Input('d-clientes', 'value')]
 
 )
-def create_graph_clientes(contents, filename, start_date, end_date, value):
+def create_graph_clientes(contents, filename, start_date, end_date, value,valuec):
     if value:
         df = parse_data(contents, filename)
 
@@ -419,18 +485,19 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
      
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
         dff = df.loc[mask] 
+        dff['Fecha factura'] = dff['Fecha factura'].dt.date
 
         if value =='Seleccionar todo':
             dff_clientes=dff.assign(Facturas=1)
 
             #Agrupar los clientes para la tabla
-            new_df = (dff_clientes.groupby(["Clientes"])[" Total ", " Saldo insoluto ",'Facturas'].sum()).reset_index()
+            new_df = (dff_clientes.groupby(["Clientes"])[[" Total ", " Saldo insoluto ",'Facturas']].sum()).reset_index()
             
             #Elegir los 10 mayores por total para graficar
             dff_clientes_max_10 = new_df.nlargest(10, [' Total '])
             
             #Agrupar por fecha para graficas de burbujas y líneas
-            new_df2 = (dff_clientes.groupby(["Fecha factura"])[" Total ", " Saldo insoluto ", 'Facturas'].sum()).reset_index()
+            new_df2 = (dff_clientes.groupby(["Fecha factura"])[[" Total ", " Saldo insoluto ", 'Facturas']].sum()).reset_index()
 
         else:
             # dataframe filtrado por fechas de los clientes   
@@ -448,43 +515,92 @@ def create_graph_clientes(contents, filename, start_date, end_date, value):
             #Agrupar por fecha para graficas de burbujas y líneas
             new_df2 = (dff_clientes.groupby(["Fecha factura"])[" Total ", " Saldo insoluto ", 'Facturas'].sum()).reset_index() 
     
-        #Top 10 mayores clientes     
-        fig1 = px.bar( dff_clientes_max_10, x="Clientes", y=" Total ",
-                       title=f"<b>Top 10 mayores clientes</b>",
-                       text_auto=True,
-                       hover_data=['Facturas'])
-        fig1.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig1.update_layout(title_x=0.5)
+        if valuec=='Todos los clientes':
+            #Top 10 mayores clientes     
+            fig1 = px.bar( dff_clientes_max_10, x="Clientes", y=" Total ",
+                           title=f"<b>Top 10 mayores clientes</b>",
+                           text_auto=True,
+                           hover_data=['Facturas'])
+            fig1.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig1.update_layout(title_x=0.5)
        
-        # Burbujas-Tendencia de facturación en el período      
-        fig2 = px.scatter(new_df2, x="Fecha factura", y=" Total ",
-                          title=f"<b>Tendencia de facturación en el período</b>",
-                          color='Facturas',
-                          size='Facturas')
-        fig2.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig2.update_layout( title_x=0.5)
+            # Burbujas-Tendencia de facturación en el período      
+            fig2 = px.scatter(new_df2, x="Fecha factura", y=" Total ",
+                              title=f"<b>Tendencia de facturación en el período</b>",
+                              color='Facturas',
+                              size='Facturas')
+            fig2.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig2.update_layout( title_x=0.5)
 
-        # Tabla de clientes
-        new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
-        data= new_df.to_dict('records')  
+            # Tabla de clientes
+            new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            data= new_df.to_dict('records')  
            
-        columns=[
-            {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == " Total " or i == " Insoluto"
-            else {"name": i, "id": i, "deletable": False, "selectable": True}
-            for i in new_df.columns
+            columns=[
+                {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+                if i == " Total " or i == " Insoluto"
+                else {"name": i, "id": i, "deletable": False, "selectable": True}
+                for i in new_df.columns
             ]
         
-        #Líneas-Tendencia de cuentas por cobrar
-        fig4 = go.Figure(data=[
-            go.Line(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "]),
-            go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
-        ])
-        # Change the bar mode
-        fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
-        fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
-        fig4.update_xaxes(title='Fecha factura') 
-        fig4.update_layout(title_x=0.5)
+            #Líneas-Tendencia de cuentas por cobrar
+            fig4 = go.Figure(data=[
+                go.Line(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "]),
+                go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
+            ])
+            # Change the bar mode
+            fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
+            fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
+            fig4.update_xaxes(title='Fecha factura') 
+            fig4.update_layout(title_x=0.5)
+
+        else:
+                        
+            df = dff_clientes.loc[dff_clientes.Clientes == valuec] 
+            df = round(df, 2)
+
+            df = (df.groupby(["Fecha factura"])[["Clientes"," Total ", " Saldo insoluto ",'Facturas']].sum()).reset_index()
+           
+            #Elegir los 10 mayores por total para graficar
+            df1 = df.nlargest(10, [' Total '])
+            fig1 = px.bar( df1, x="Fecha factura", y=" Total ",
+                           title=f"<b>Top 10 días de mayor facturación</b>",
+                           text_auto=True,
+                           hover_data=['Facturas'])
+            fig1.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig1.update_layout(title_x=0.5)
+       
+            # Burbujas-Tendencia de facturación en el período      
+            fig2 = px.scatter(df, x="Fecha factura", y=" Total ",
+                              title=f"<b>Tendencia de facturación en el período</b>",
+                              color='Facturas',
+                              size='Facturas')
+            fig2.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig2.update_layout( title_x=0.5)
+
+            # Tabla de clientes
+            df3 = df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            data= df3.to_dict('records')  
+           
+            columns=[
+                {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+                if i == " Total " or i == " Insoluto"
+                else {"name": i, "id": i, "deletable": False, "selectable": True}
+                for i in df3.columns
+            ]
+        
+            #Líneas-Tendencia de cuentas por cobrar
+            fig4 = go.Figure(data=[
+                go.Line(name='Total', x=df["Fecha factura"], y=df[" Total "]),
+                go.Line(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])
+            ])
+            # Change the bar mode
+            fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
+            fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
+            fig4.update_xaxes(title='Fecha factura') 
+            fig4.update_layout(title_x=0.5)
+
+        
  
         return fig1, fig2, data, columns, fig4
     else:
@@ -683,16 +799,18 @@ def statsfunc(x, contents, filename, start_date, end_date, value):
     Input('upload-data', 'filename'),
     Input('picker-range', 'start_date'),
     Input('picker-range', 'end_date'),
-    Input('dropdown_empresa_base', 'value')]
+    Input('dropdown_empresa_base', 'value'),
+    Input('d-proveedores', 'value')]
 
 )
-def create_graph_proveedores(contents, filename, start_date, end_date, value):
+def create_graph_proveedores(contents, filename, start_date, end_date, value, valuep):
     if value:
         df = parse_data(contents, filename)
         df = df.loc[df['Estatus']=='Vigente']         
      
         mask = (df['Fecha factura'] >= start_date) & (df['Fecha factura'] <= end_date)        
         dff = df.loc[mask] 
+        dff['Fecha factura'] = dff['Fecha factura'].dt.date
 
         if value == 'Seleccionar todo':
             dff_proveedores=dff.assign(Facturas=1)
@@ -707,8 +825,7 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
             #Agrupar por fecha para graficas de burbujas y líneas
             new_df2 = (dff_proveedores.groupby(["Fecha factura"])[[" Total ", " Saldo insoluto ", 'Facturas']].sum()).reset_index()
             
-        else:
-            
+        else:            
             # dataframe filtrado por fechas de los proveedores   
             dff_mask_proveedores=dff['Clientes']==value
             
@@ -724,41 +841,82 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value):
             #Agrupar por fecha para graficas de burbujas y líneas
             new_df2 = (dff_proveedores.groupby(["Fecha factura"])[[" Total ", " Saldo insoluto ", 'Facturas']].sum()).reset_index() 
         
-        
-        fig5 = px.bar( dff_proveedores_max_10, x="Proveedores", y=" Total ",                       
+        if valuep=='Todos los proveedores':
+            fig5 = px.bar( dff_proveedores_max_10, x="Proveedores", y=" Total ",                       
                        title=f"<b>Top 10 mayores proveedores</b>",                      
                        text_auto=True,
                        hover_data=['Facturas'])
-        fig5.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig5.update_layout(title_x=0.5)
+            fig5.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig5.update_layout(title_x=0.5)
        
-        #Top 10 mayores proveedores----------------------------------------------------
-        fig6 = px.scatter(new_df2, x="Fecha factura", y=" Total ",                       
+            #Top 10 mayores proveedores----------------------------------------------------
+            fig6 = px.scatter(new_df2, x="Fecha factura", y=" Total ",                       
                           title=f"<b>Tendencia de facturación en el período</b>",
                           color='Facturas',
                           size='Facturas')
-        fig6.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
-        fig6.update_layout(title_x=0.5)
+            fig6.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig6.update_layout(title_x=0.5)
         
-        new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
-        data= new_df.to_dict('records')
+            new_df = new_df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            data= new_df.to_dict('records')
            
-        columns=[
-            {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
-            if i == " Total " or i == " Insoluto"
-            else {"name": i, "id": i, "deletable": False, "selectable": True}
-            for i in new_df.columns
-            ]
+            columns=[
+                {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+                if i == " Total " or i == " Insoluto"
+                else {"name": i, "id": i, "deletable": False, "selectable": True}
+                for i in new_df.columns
+                ]
 
-        fig8 = go.Figure(data=[
-            go.Line(name='Total' , x=new_df2["Fecha factura"], y=new_df2[" Total "]),
-            go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
-        ])
-        # Change the bar mode
-        fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
-        fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
-        fig8.update_xaxes(title='Fecha factura')
-        fig8.update_layout(title_x=0.5) 
+            fig8 = go.Figure(data=[
+                   go.Line(name='Total' , x=new_df2["Fecha factura"], y=new_df2[" Total "]),
+                   go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
+                   ])
+            # Change the bar mode
+            fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
+            fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
+            fig8.update_xaxes(title='Fecha factura')
+            fig8.update_layout(title_x=0.5) 
+
+        else:
+            df = dff_proveedores.loc[dff_proveedores.Proveedores == valuep] 
+            df = round(df, 2)
+            df = (df.groupby(["Fecha factura"])[["Proveedores"," Total ", " Saldo insoluto ",'Facturas']].sum()).reset_index()
+           
+            df1 = df.nlargest(10, [' Total '])
+            fig5 = px.bar( df1, x="Fecha factura", y=" Total ",                       
+                       title=f"<b>Top 10 días de mayor facturación</b>",                      
+                       text_auto=True,
+                       hover_data=['Facturas'])
+            fig5.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig5.update_layout(title_x=0.5)
+       
+            #Top 10 mayores proveedores----------------------------------------------------
+            fig6 = px.scatter(df, x="Fecha factura", y=" Total ",                       
+                          title=f"<b>Tendencia de facturación en el período</b>",
+                          color='Facturas',
+                          size='Facturas')
+            fig6.update_yaxes(tickprefix="$", showgrid=True, tickformat=",")
+            fig6.update_layout(title_x=0.5)
+        
+            df4 = df.rename({' Saldo insoluto ': ' Insoluto'}, axis=1)
+            data= df4.to_dict('records')
+           
+            columns=[
+                {"name":'($)'+i, "id": i, "deletable": False, "selectable": True, "hideable": False}
+                if i == " Total " or i == " Insoluto"
+                else {"name": i, "id": i, "deletable": False, "selectable": True}
+                for i in df4.columns
+                ]
+
+            fig8 = go.Figure(data=[
+                   go.Line(name='Total' , x=df["Fecha factura"], y=df[" Total "]),
+                   go.Line(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])
+                   ])
+            # Change the bar mode
+            fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
+            fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
+            fig8.update_xaxes(title='Fecha factura')
+            fig8.update_layout(title_x=0.5) 
 
         return fig5, fig6, data, columns, fig8
     else:

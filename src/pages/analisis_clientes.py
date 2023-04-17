@@ -13,19 +13,28 @@ layout = dls.Fade([
                         className='text-center'),
                         width = 12)
     ),
+    dbc.Row([
+        dbc.Col([dcc.Dropdown(id='d-clientes',
+                             clearable=False,
+                             options={'label': 'Todos los clientes', 'value': 'Todos los clientes'},                             
+                             style={'margin':'0em auto 0.5em'},
+                             value='Todos los clientes',
+                             ), 
+        ], xs=12, md={"size": 2, "offset": 10})
+    ]),    
 
     dbc.Row([
         
         dbc.Col([
            
             dcc.Graph(id='line-fig1', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})            
-        ], xs=12, md=4),
+        ], xs=12, md=5),
         
         dbc.Col([
           
             dcc.Graph(id='line-fig2', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})
             
-        ], xs=12, md=8)
+        ], xs=12, md=7)
     ]),
     html.Br(),
 
@@ -33,7 +42,7 @@ layout = dls.Fade([
         dbc.Col([
             dcc.Graph(id='line-fig4', figure={}, config={"locale": 'es'}, className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})
 
-        ], xs=12, md=8),
+        ], xs=12, md=7),
 
         dbc.Col([
          html.Div([
@@ -77,7 +86,7 @@ layout = dls.Fade([
             }                      
         ), 
         ], className='twelve columns number-stat-box', style={'boxShadow': '0.1em 0.1em 0.5em #9FA6B2'})       
-       ], xs=12, md=4),
+       ], xs=12, md=5),
 
         
     ])
