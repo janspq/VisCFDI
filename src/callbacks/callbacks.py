@@ -513,7 +513,7 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
             dff_clientes_max_10 = new_df.nlargest(10, [' Total '])
         
             #Agrupar por fecha para graficas de burbujas y líneas
-            new_df2 = (dff_clientes.groupby(["Fecha factura"])[" Total ", " Saldo insoluto ", 'Facturas'].sum()).reset_index() 
+            new_df2 = (dff_clientes.groupby(["Fecha factura"])[[" Total ", " Saldo insoluto ", 'Facturas']].sum()).reset_index() 
     
         if valuec=='Todos los clientes':
             #Top 10 mayores clientes     
@@ -544,13 +544,10 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
                 for i in new_df.columns
             ]
         
-            #Líneas-Tendencia de cuentas por cobrar
-            fig4 = go.Figure(data=[
-                go.Line(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "]),
-                go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
-            ])
-            # Change the bar mode
-            fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
+            fig4 = go.Figure()
+            fig4.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "],  fill='tonexty')) # fill down to xaxis
+            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig4.update_layout(title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
             fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig4.update_xaxes(title='Fecha factura') 
             fig4.update_layout(title_x=0.5)
@@ -592,12 +589,10 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
             ]
         
             #Líneas-Tendencia de cuentas por cobrar
-            fig4 = go.Figure(data=[
-                go.Line(name='Total', x=df["Fecha factura"], y=df[" Total "]),
-                go.Line(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])
-            ])
-            # Change the bar mode
-            fig4.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
+            fig4 = go.Figure()
+            fig4.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "],  fill='tonexty')) # fill down to xaxis
+            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "], fill='tozeroy' )) # fill to trace0 y
+            fig4.update_layout(title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
             fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig4.update_xaxes(title='Fecha factura') 
             fig4.update_layout(title_x=0.5)
@@ -870,15 +865,13 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
                 for i in new_df.columns
                 ]
 
-            fig8 = go.Figure(data=[
-                   go.Line(name='Total' , x=new_df2["Fecha factura"], y=new_df2[" Total "]),
-                   go.Line(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])
-                   ])
-            # Change the bar mode
-            fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
+            fig8 = go.Figure()
+            fig8.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "],  fill='tonexty')) # fill down to xaxis
+            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig8.update_layout(title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
             fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
-            fig8.update_xaxes(title='Fecha factura')
-            fig8.update_layout(title_x=0.5) 
+            fig8.update_xaxes(title='Fecha factura') 
+            fig8.update_layout(title_x=0.5)
 
         else:
             df = dff_proveedores.loc[dff_proveedores.Proveedores == valuep] 
@@ -912,15 +905,13 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
                 for i in df4.columns
                 ]
 
-            fig8 = go.Figure(data=[
-                   go.Line(name='Total' , x=df["Fecha factura"], y=df[" Total "]),
-                   go.Line(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])
-                   ])
-            # Change the bar mode
-            fig8.update_layout(barmode='group', title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
+            fig8 = go.Figure()
+            fig8.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "],  fill='tonexty')) # fill down to xaxis
+            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig8.update_layout(title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
             fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
-            fig8.update_xaxes(title='Fecha factura')
-            fig8.update_layout(title_x=0.5) 
+            fig8.update_xaxes(title='Fecha factura') 
+            fig8.update_layout(title_x=0.5)
 
         return fig5, fig6, data, columns, fig8
     else:

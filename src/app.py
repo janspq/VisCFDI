@@ -150,7 +150,7 @@ def display_page(pathname,contents, filename, value):
         return no_data.layout
  
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
 
 
 
