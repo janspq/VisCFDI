@@ -545,8 +545,8 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
             ]
         
             fig4 = go.Figure()
-            fig4.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "],  fill='tonexty')) # fill down to xaxis
-            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig4.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "])) # fill down to xaxis
+            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])) # fill to trace0 y
             fig4.update_layout(title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
             fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig4.update_xaxes(title='Fecha factura') 
@@ -590,8 +590,8 @@ def create_graph_clientes(contents, filename, start_date, end_date, value,valuec
         
             #Líneas-Tendencia de cuentas por cobrar
             fig4 = go.Figure()
-            fig4.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "],  fill='tonexty')) # fill down to xaxis
-            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "], fill='tozeroy' )) # fill to trace0 y
+            fig4.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "])) # fill down to xaxis
+            fig4.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])) # fill to trace0 y
             fig4.update_layout(title=f"<b>Tendencia de cuentas por cobrar</b>", title_x=0.5)
             fig4.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig4.update_xaxes(title='Fecha factura') 
@@ -866,8 +866,8 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
                 ]
 
             fig8 = go.Figure()
-            fig8.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "],  fill='tonexty')) # fill down to xaxis
-            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig8.add_trace(go.Scatter(name='Total', x=new_df2["Fecha factura"], y=new_df2[" Total "])) # fill down to xaxis
+            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=new_df2["Fecha factura"], y=new_df2[" Saldo insoluto "])) # fill to trace0 y
             fig8.update_layout(title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
             fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig8.update_xaxes(title='Fecha factura') 
@@ -906,8 +906,8 @@ def create_graph_proveedores(contents, filename, start_date, end_date, value, va
                 ]
 
             fig8 = go.Figure()
-            fig8.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "],  fill='tonexty')) # fill down to xaxis
-            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "], fill='tozeroy')) # fill to trace0 y
+            fig8.add_trace(go.Scatter(name='Total', x=df["Fecha factura"], y=df[" Total "])) # fill down to xaxis
+            fig8.add_trace(go.Scatter(name='Saldo insoluto', x=df["Fecha factura"], y=df[" Saldo insoluto "])) # fill to trace0 y
             fig8.update_layout(title=f"<b>Tendencia de cuentas por pagar</b>", title_x=0.5)
             fig8.update_yaxes(tickprefix="$", showgrid=True, tickformat=",", title= 'Facturado') 
             fig8.update_xaxes(title='Fecha factura') 
